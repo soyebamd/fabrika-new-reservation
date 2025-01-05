@@ -15,57 +15,63 @@
   <body>
     <h2>Layout</h2>
 
-    <input type="radio" id="main_floor" name="layout" value="Main Floor" class="location" />
+    <input
+      type="radio"
+      id="main_floor"
+      name="layout"
+      value="Main Floor"
+      class="location"
+    />
     <label for="main_floor">Main Floor</label>
-    <input type="radio" id="mezzanine_floor" name="layout" value="Mezzanine Floor"  class="location"/>
+    <input
+      type="radio"
+      id="mezzanine_floor"
+      name="layout"
+      value="Mezzanine Floor"
+      class="location"
+    />
     <label for="mezzanine_floor">Mezzanine Floor</label>
 
     <!-- Main Floor -->
     <div class="container-fluid">
-      <div class="row ">
+      <div class="row">
         <!-- 1st row B,A -->
-        <div class="col d-flex w-100 gap-4  ">
-        
+        <div class="col d-flex w-100 gap-4">
+          <!-- GROUP 1 TABLE WITH A AND B TABLE NUMBER, ID row-AB -->
+          <div class="row w-100 flex-row-reverse" id="row-AB">
+            <!-- 1st add dynamically from javascript -->
+          </div>
 
-        <div class="row  w-100 flex-row-reverse " id="row-AB">
-        <!-- 1st add dynamically from javascript -->
+          <!-- 2nd row 109, 105 -->
+          <!-- GROUP 2 TABLE WITH 105 TO 109 TABLE NUMBER, ID row-109-105 -->
+          <div class="row w-100 flex-row-reverse" id="row-109-105"></div>
+
+          <!-- 3rd row 108, 104 -->
+          <!-- GROUP 3 TABLE WITH 100 TO 104 TABLE NUMBER, ID row-104-100 -->
+          <div class="row w-100 flex-row-reverse" id="row-104-100"></div>
         </div>
-        <!-- 2nd row 109,105 -->
-        <div class="row  w-100 flex-row-reverse" id="row-109-105">
-         
-        </div>
-        <!-- 3rd row 108,104 -->
-        <div class="row w-100 flex-row-reverse" id="row-104-100">
-        
-        </div>
-     
+
+        <div class="col"></div>
       </div>
-
-
-      <div class="col"></div>
-    </div></div>
-
-    <!-- Mezzanine Floor -->
-
-      <div class="container-fluid">
-
-       <!-- 1st row 305 - 315 -->
-
-        <div class="row w-100 flex-row-reverse" id="row-305-315">
-        
-        </div>
-
-       
     </div>
 
-      <div class="container">
+    <!-- Mezzanine Floor -->
+    <div class="container-fluid">
+      <!-- 1st row 305 - 315 -->
+      <!-- GROUP 4 TABLE WITH 305 TO 315 TABLE NUMBER, ID row-305-315 -->
+      <div class="row w-100 flex-row-reverse" id="row-305-315"></div>
+    </div>
 
-    <h1>Fabrika Reservation Chart</h1>
-    <p>Select show date:</p>
-    <div id="datepicker-container"></div>
+    <!-- Content Section -->
+    <div class="container">
+      <h1>Fabrika Reservation Chart</h1>
+      <p>Select show date:</p>
+      <div id="datepicker-container"></div>
 
-    <table id="result" border="1"></table>
+      <table id="result" border="1"></table>
+    </div>
 
+    <!-- External CSS and Scripts -->
     <link
       rel="stylesheet"
       href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css"
