@@ -320,6 +320,7 @@ function createTable(data, tableGroup, color, currentDay) {
           total -= data.price;
         }
         total -= data.price; // Subtract the table price when unchecked
+        //
       }
 
       console.log(
