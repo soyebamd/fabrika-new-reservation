@@ -66,9 +66,15 @@ let mainFloorTables = [];
 
 const selectedCheckboxes = {}; // Store selected checkboxes (table_number => [seat_numbers])
 
+const seatingTime = "7:00 PM";
+
 const chooseLocation = document.querySelectorAll(".location");
 
 let currentDay = new Date().getDay(); //### Get the current day (0 = Sunday, ..., 6 = Saturday)
+
+let bookingDate;
+// get reservation info in array
+const reservationData = [];
 
 //### GET THE DEFAULT LOCATION VALUE
 if (chooseLocation.length > 0) {
@@ -222,7 +228,7 @@ function ReservationTables(currentDay) {
     //NON BOOKING DAYS
 
     if (currentDay >= 1 && currentDay <= 3) {
-      console.log("non booking days");
+      // console.log("non booking days");
       // Display the properties you need
       result.innerHTML = `OFF DAY`;
     } else {
@@ -264,9 +270,9 @@ function ReservationTables(currentDay) {
 
 //### CREATE TABLES FUNCTION WITH CHOOSE SEAT NUMBER
 function createTable(data, tableGroup, color, currentDay) {
-  console.log("Current Day" + currentDay);
+  // console.log("Current Day" + currentDay);
   if (currentDay >= 1 && currentDay <= 3) {
-    console.log("Non-booking day: No tables created");
+    // console.log("Non-booking day: No tables created");
     return; // Exit the function if it's an off day
   }
 
@@ -281,20 +287,17 @@ function createTable(data, tableGroup, color, currentDay) {
   tableGroup.appendChild(createCol);
 
   const maxSeat = data.max_seat_requirment;
-  let table_numbers;
+
   for (let i = 1; i <= maxSeat; i++) {
     const inputCheckbox = document.createElement("input");
     inputCheckbox.setAttribute("type", "checkbox");
     inputCheckbox.setAttribute("id", `table_${data.table_number}_${i}`);
-    // inputCheckbox.setAttribute("value", data.price);
-    // inputCheckbox.dataset.price = data.price; // Assign price securely
-    // inputCheckbox.setAttribute("value", i);
 
-    //console.log("Table Price Updated?" + tablePrice);
+    const table_id = `${data.table_number}_${i}`;
 
     if (
-      selectedCheckboxes[data.table_number] &&
-      selectedCheckboxes[data.table_number].includes(i)
+      selectedCheckboxes[table_id] &&
+      selectedCheckboxes[table_id].includes(i)
     ) {
       inputCheckbox.checked = true;
     }
@@ -303,29 +306,51 @@ function createTable(data, tableGroup, color, currentDay) {
     inputCheckbox.setAttribute("class", "form-check-input");
 
     inputCheckbox.addEventListener("change", function () {
-      table_numbers = data.table_number;
+      //### IF CHECKED REMAIN CHECKED OPTION
       if (this.checked) {
-        if (!selectedCheckboxes[data.table_number]) {
-          selectedCheckboxes[data.table_number] = [];
+        if (!selectedCheckboxes[table_id]) {
+          selectedCheckboxes[table_id] = [];
         }
 
-        selectedCheckboxes[data.table_number].push(i);
+        selectedCheckboxes[table_id].push(i);
+
+        //END
 
         total += data.price; // Add the table price when checked
-        table_numbers = data.table_number;
+
+        //### ADD DATA TO ARRAY
+        reservationData.push({
+          table_id: table_id,
+          table_number: data.table_number,
+          table_price: data.price,
+          table_location: data.location,
+          table_booking_date: bookingDate,
+        });
+
+        console.log(reservationData);
+
+        //END
       } else {
-        const index = selectedCheckboxes[data.table_number].indexOf(i);
+        const index = selectedCheckboxes[table_id].indexOf(i);
         if (index > -1) {
-          selectedCheckboxes[data.table_number].splice(index, 1);
+          selectedCheckboxes[table_id].splice(index, 1);
           total -= data.price;
         }
         total -= data.price; // Subtract the table price when unchecked
         //
-      }
 
-      console.log(
-        `${data.price} - ${table_numbers} - ${total} total selected table price`
-      );
+        //### FIND TABLE NUMBER (INDEX) OF THE ELEMENT AND REMOVE IT.
+        const removeBookingIndex = reservationData.findIndex(
+          (reservation) =>
+            reservation.table_id === table_id &&
+            reservation.table_booking_date === bookingDate
+        );
+
+        if (removeBookingIndex !== -1) {
+          reservationData.splice(removeBookingIndex, 1);
+          console.log("Removed Reservation:", reservationData);
+        }
+      }
     });
 
     // inputCheckbox.appendChild(document.createTextNode(i));
@@ -356,7 +381,7 @@ function createTable(data, tableGroup, color, currentDay) {
 //END
 
 //### TRIGGER THE RESERVATION TABLES FUNCTION WITH CURRENT DAY
-ReservationTables(showDays[currentDay]);
+if (currentDay == showDays[currentDay]) ReservationTables(showDays[currentDay]);
 //END
 
 //# DATE PICKER FUNCTION
@@ -376,6 +401,10 @@ $(function () {
 
       const selectedDate = new Date(dateText);
       // Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+
+      bookingDate = $.datepicker.formatDate("mm/dd/yy", selectedDate);
+      console.log("Formatted Date:", bookingDate);
+
       const dayOfWeek = selectedDate.getDay();
       // Get the day of the month (1 to 31)
       const dayOfMonth = selectedDate.getDate();
@@ -384,9 +413,9 @@ $(function () {
         weekday: "long",
       });
       // Log the results
-      console.log("Day of the week (0-6):", dayOfWeek); // Sunday = 0, Monday = 1, etc.
-      console.log("Day of the month (1-31):", dayOfMonth);
-      console.log("Day name (e.g., 'Monday'):", dayName);
+      //   console.log("Day of the week (0-6):", dayOfWeek); // Sunday = 0, Monday = 1, etc.
+      //  console.log("Day of the month (1-31):", dayOfMonth);
+      //   console.log("Day name (e.g., 'Monday'):", dayName);
       currentDay = dayOfWeek;
 
       //### TRIGGER THE RESERVATION TABLES FUNCTION
