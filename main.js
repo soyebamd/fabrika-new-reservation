@@ -41,7 +41,7 @@
 //
 // Please refer to the individual functions below for specific logic on each feature (like the day-based pricing, table creation, and seat selection).
 // ============================
-
+"use strict";
 import { FabrikaReservationTables } from "./src/reservationTables.js";
 
 const result = document.querySelector("#result");
