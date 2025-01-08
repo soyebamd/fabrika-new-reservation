@@ -11,10 +11,33 @@
     />
 
     <title>Fabrika Reservation Project</title>
-    <script type="module" crossorigin src="/assets/index-KVaLwOZT.js"></script>
+    <style>
+      #time-slot li {
+        list-style: none;
+        border: solid 2px;
+        margin: 10px;
+        padding: 3px 5px;
+      }
+      #time-slot li:hover {
+        background-color: #f0f0f0;
+        cursor: pointer;
+      }
+
+      #time-slot input {
+        display: none;
+      }
+
+      #time-slot input:checked + li {
+        background-color: #690202;
+        color: #fff;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-DQ1E1XPW.js"></script>
   </head>
   <body>
     <h2>Layout</h2>
+
+    <div id="time-slot"></div>
 
     <input
       type="radio"
