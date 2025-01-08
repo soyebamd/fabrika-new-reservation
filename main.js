@@ -42,6 +42,7 @@
 // Please refer to the individual functions below for specific logic on each feature (like the day-based pricing, table creation, and seat selection).
 // ============================
 "use strict";
+
 import { FabrikaReservationTables } from "./src/reservationTables.js";
 
 const result = document.querySelector("#result");
@@ -65,8 +66,36 @@ let showLocation;
 let mainFloorTables = [];
 
 const selectedCheckboxes = {}; // Store selected checkboxes (table_number => [seat_numbers])
+const selectedTime = {};
+const timeSlotWrapper = document.querySelector("#time-slot");
+const seatingTime = {
+  weekTimeSlot: ["6:00", "18:15", "18:30"],
 
-const seatingTime = "7:00 PM";
+  saturdayTimeSlot: ["8:00", "18:15", "18:30", "19:00", "19:15", "19:30"],
+
+  sundayTimeSlot: ["7:00", "12:15", "12:30", "12:45", "13:00"],
+};
+
+const { weekTimeSlot, saturdayTimeSlot, sundayTimeSlot } = seatingTime;
+
+const showName = [
+  "Drag Brunch",
+  "Easter Sunday Drag Brunch",
+  "Easter Sunday 'Opus' Dinner",
+  "Bordello (Burlesque)",
+  "Opus (Variety Show)",
+  "Opus (Variety Show)",
+  "Boogie Brunch Saturday (Returning Fall 2024!)",
+  "Falsetto Thursday (Returning Fall 2024!)",
+  "Wonderland (Returning Fall 2024!)",
+  '"Daddy Issues" 1 PM SHOW',
+  "NYE 2024 Masquerade",
+  "A Nightmare Before Christmas",
+];
+
+// FabrikaReservationTables.forEach(({ table_number }) => {
+//   console.log(table_number);
+// });
 
 const chooseLocation = document.querySelectorAll(".location");
 
@@ -96,13 +125,15 @@ chooseLocation.forEach((location) => {
   location.addEventListener("change", function () {
     if (location.checked) {
       showLocation = location.value;
-      console.log(showLocation); // This will log the selected location  value from the radio button
+      //  console.log(showLocation); // This will log the selected location  value from the radio button
 
       mainFloorTables = FabrikaReservationTables.filter(
         (table) => table.location === showLocation
       );
       //### TRIGGER THE RESERVATION TABLES FUNCTION
       ReservationTables(currentDay);
+      //  console.log(reservationData);
+
       //END
     }
   });
@@ -115,8 +146,114 @@ function clearTables() {
   group3_tables.innerHTML = "";
   mezzanine_group1_tables.innerHTML = "";
 }
-
+function clearTimeSlot() {
+  timeSlotWrapper.innerHTML = "";
+}
 function ReservationTables(currentDay) {
+  //### TIME SLOT MANAGEMENT
+  clearTimeSlot();
+  // convert to stagndard time
+
+  function convertTime(time24) {
+    let [hours, minutes] = time24.split(":").map(Number);
+    let period = hours >= 12 ? "PM" : "AM";
+
+    // Convert hours from 24-hour format to 12-hour format
+    hours = hours % 12 || 12; // Convert 0 (midnight) to 12
+
+    return `${hours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
+  }
+
+  function timeSlotManagment(timeslot) {
+    if (timeslot === 0) {
+      timeslot = sundayTimeSlot;
+    } else if (timeslot === 6) {
+      timeslot = saturdayTimeSlot;
+    } else {
+      timeslot = weekTimeSlot;
+    }
+
+    timeslot.forEach((time, index) => {
+      //  console.log(time, index);
+
+      // Create label for time slot
+      const label = document.createElement("label");
+
+      // Create li element for time slot
+      const wrapTimeSlots = document.createElement("li");
+      wrapTimeSlots.setAttribute("name", convertTime(time));
+      wrapTimeSlots.value = convertTime(time);
+      wrapTimeSlots.textContent = convertTime(time);
+
+      // Create input radio element
+      const convertedTime = "time_" + time.replace(/[:\s]/g, "");
+      const wrapTimeSlots_input = document.createElement("input");
+      wrapTimeSlots_input.setAttribute("type", "radio");
+      wrapTimeSlots_input.className = "show-times";
+      wrapTimeSlots_input.setAttribute("name", "selected_time");
+      wrapTimeSlots_input.setAttribute("id", convertedTime);
+      wrapTimeSlots_input.value = convertTime(time);
+
+      const time_id = `${convertedTime}_${index}_${showLocation.replace(
+        / /g,
+        ""
+      )}`;
+
+      //console.log(time_id + "dddddddddddddddddddddddddddddddddddd");
+
+      // Initialize or check if the time slot is already selected for this location
+      if (
+        selectedTime[showLocation] &&
+        selectedTime[showLocation][time_id] === index
+      ) {
+        wrapTimeSlots_input.checked = true; // If the time slot is selected for the current location
+      } else {
+        wrapTimeSlots_input.checked = false; // Deselect if it's not selected
+      }
+      // Handle change event when a time slot is selected or deselected
+      wrapTimeSlots_input.addEventListener("change", function () {
+        if (this.checked) {
+          //   console.log(this.id + " checkbox id");
+
+          // Initialize the selectedTime object for the current location if not already done
+          if (!selectedTime[showLocation]) {
+            selectedTime[showLocation] = {};
+          }
+
+          // Deselect all other checkboxes for the current location
+          for (const key in selectedTime[showLocation]) {
+            if (selectedTime[showLocation].hasOwnProperty(key)) {
+              selectedTime[showLocation][key] = null; // Unselect any previously selected time for the current location
+            }
+          }
+
+          // Update the selectedTime object with the new time selection for the current location
+          selectedTime[showLocation][time_id] = index; // Only store the latest selection for this floor
+
+          // Update the reservation data with the selected time slot
+          reservationData.time_slot = this.value;
+
+          // Log updated reservation data
+          //   console.log("Updated selectedTime:", selectedTime);
+          //  console.log("Current Value" + this.value);
+        }
+
+        //  console.log(showLocation + " - Trace location");
+        //  console.log(reservationData);
+        //  console.log(reservationData.table_location);
+      });
+
+      // Append the radio input and the label to the DOM
+      timeSlotWrapper.appendChild(label);
+      label.appendChild(wrapTimeSlots_input);
+      label.appendChild(wrapTimeSlots);
+    });
+  }
+  if (currentDay === 0 || currentDay >= 4) {
+    timeSlotManagment(currentDay);
+  }
+  //END
+
   total = 0; // Reset the total price to zero for now once the day changes and table will still be selected value if checked
   clearTables(); // Clear existing tables before creating new ones
 
@@ -159,11 +296,11 @@ function ReservationTables(currentDay) {
         tableData.price = 20;
       }
 
-      console.log(
-        tableData.price +
-          " Table Price with table number " +
-          tableData.table_number
-      );
+      // console.log(
+      //   tableData.price +
+      //     " Table Price with table number " +
+      //     tableData.table_number
+      // );
     }
     //END
 
@@ -291,9 +428,11 @@ function createTable(data, tableGroup, color, currentDay) {
   for (let i = 1; i <= maxSeat; i++) {
     const inputCheckbox = document.createElement("input");
     inputCheckbox.setAttribute("type", "checkbox");
-    inputCheckbox.setAttribute("id", `table_${data.table_number}_${i}`);
+    inputCheckbox.setAttribute("id", `${data.table_number}_${i}`);
 
     const table_id = `${data.table_number}_${i}`;
+
+    // console.log(selectedCheckboxes + "Checkeddd");
 
     if (
       selectedCheckboxes[table_id] &&
@@ -306,6 +445,17 @@ function createTable(data, tableGroup, color, currentDay) {
     inputCheckbox.setAttribute("class", "form-check-input");
 
     inputCheckbox.addEventListener("change", function () {
+      //### GET SLOT TIME
+      const getTimeSlot = document.querySelectorAll(".show-times");
+
+      let slotTime;
+
+      getTimeSlot.forEach((slot) => {
+        if (slot.checked) {
+          slotTime = slot.value;
+        }
+      });
+      //END
       //### IF CHECKED REMAIN CHECKED OPTION
       if (this.checked) {
         if (!selectedCheckboxes[table_id]) {
@@ -325,6 +475,7 @@ function createTable(data, tableGroup, color, currentDay) {
           table_price: data.price,
           table_location: data.location,
           table_booking_date: bookingDate,
+          time_slot: slotTime,
         });
 
         console.log(reservationData);
@@ -380,6 +531,32 @@ function createTable(data, tableGroup, color, currentDay) {
 }
 //END
 
+//### Reset Data
+function resetData(bookingSelectedDate) {
+  console.log(bookingSelectedDate + " RESET Booking DATE");
+
+  // Iterate over reservation data to process each booking
+  reservationData.forEach((data) => {
+    const selectedSeatReset = document.querySelectorAll(".form-check-input");
+
+    selectedSeatReset.forEach((reset) => {
+      // Initially uncheck all checkboxes
+      reset.checked = false;
+
+      // Check if the date matches the selected date and if the checkbox ID matches the table ID
+      if (
+        data.table_booking_date.includes(bookingSelectedDate) &&
+        reset.id === data.table_id
+      ) {
+        console.log("Matching checkbox found: " + reset.id);
+        reset.checked = true; // Check the checkbox
+      }
+    });
+  });
+}
+
+//END
+
 //### TRIGGER THE RESERVATION TABLES FUNCTION WITH CURRENT DAY
 if (currentDay == showDays[currentDay]) ReservationTables(showDays[currentDay]);
 //END
@@ -403,7 +580,7 @@ $(function () {
       // Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
 
       bookingDate = $.datepicker.formatDate("mm/dd/yy", selectedDate);
-      console.log("Formatted Date:", bookingDate);
+      //  console.log("Formatted Date:", bookingDate);
 
       const dayOfWeek = selectedDate.getDay();
       // Get the day of the month (1 to 31)
@@ -419,7 +596,10 @@ $(function () {
       currentDay = dayOfWeek;
 
       //### TRIGGER THE RESERVATION TABLES FUNCTION
+
       ReservationTables(currentDay);
+
+      resetData(bookingDate);
       //END
     },
   });

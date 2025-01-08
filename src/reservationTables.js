@@ -859,3 +859,14 @@ export const FabrikaReservationTables = [
     location: "Mezzanine Floor",
   },
 ];
+
+const {
+  id,
+  table_number,
+  min_seat_requirment,
+  max_seat_requirment,
+  price,
+  desc,
+  image,
+  location,
+} = FabrikaReservationTables;
