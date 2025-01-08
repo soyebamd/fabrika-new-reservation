@@ -132,7 +132,7 @@ chooseLocation.forEach((location) => {
       );
       //### TRIGGER THE RESERVATION TABLES FUNCTION
       ReservationTables(currentDay);
-      //  console.log(reservationData);
+      console.log(reservationData);
 
       //END
     }
@@ -239,7 +239,7 @@ function ReservationTables(currentDay) {
         }
 
         //  console.log(showLocation + " - Trace location");
-        //  console.log(reservationData);
+        console.log(reservationData);
         //  console.log(reservationData.table_location);
       });
 
@@ -428,9 +428,9 @@ function createTable(data, tableGroup, color, currentDay) {
   for (let i = 1; i <= maxSeat; i++) {
     const inputCheckbox = document.createElement("input");
     inputCheckbox.setAttribute("type", "checkbox");
-    inputCheckbox.setAttribute("id", `${data.table_number}_${i}`);
+    inputCheckbox.setAttribute("id", `seat_number_${data.table_number}_${i}`);
 
-    const table_id = `${data.table_number}_${i}`;
+    const table_id = `seat_number_${data.table_number}_${i}`;
 
     // console.log(selectedCheckboxes + "Checkeddd");
 
@@ -449,10 +449,12 @@ function createTable(data, tableGroup, color, currentDay) {
       const getTimeSlot = document.querySelectorAll(".show-times");
 
       let slotTime;
+      let slotTimeID;
 
       getTimeSlot.forEach((slot) => {
         if (slot.checked) {
           slotTime = slot.value;
+          slotTimeID = slot.id;
         }
       });
       //END
@@ -476,6 +478,7 @@ function createTable(data, tableGroup, color, currentDay) {
           table_location: data.location,
           table_booking_date: bookingDate,
           time_slot: slotTime,
+          time_Id: slotTimeID,
         });
 
         console.log(reservationData);
@@ -531,30 +534,46 @@ function createTable(data, tableGroup, color, currentDay) {
 }
 //END
 
-//### Reset Data
 function resetData(bookingSelectedDate) {
   console.log(bookingSelectedDate + " RESET Booking DATE");
 
-  // Iterate over reservation data to process each booking
+  // First, uncheck all checkboxes
+  const selectedSeatReset = document.querySelectorAll(".form-check-input");
+  selectedSeatReset.forEach((reset) => {
+    reset.checked = false;
+  });
+
+  // Then, check boxes that match reservations for the selected date
   reservationData.forEach((data) => {
-    const selectedSeatReset = document.querySelectorAll(".form-check-input");
-
-    selectedSeatReset.forEach((reset) => {
-      // Initially uncheck all checkboxes
-      reset.checked = false;
-
-      // Check if the date matches the selected date and if the checkbox ID matches the table ID
-      if (
-        data.table_booking_date.includes(bookingSelectedDate) &&
-        reset.id === data.table_id
-      ) {
-        console.log("Matching checkbox found: " + reset.id);
-        reset.checked = true; // Check the checkbox
+    if (data.table_booking_date.includes(bookingSelectedDate)) {
+      const checkbox = document.querySelector(`#${data.table_id}`);
+      if (checkbox) {
+        checkbox.checked = true;
+        console.log(`Checkbox ${checkbox.id} checked`);
       }
-    });
+    }
+  });
+
+  //Reset time slot
+
+  // First unchked all time slot
+
+  // First, uncheck all checkboxes
+  const timeSlotReset = document.querySelectorAll(".show-times");
+  timeSlotReset.forEach((reset) => {
+    reset.checked = false;
+  });
+  reservationData.forEach((data) => {
+    if (data.table_booking_date.includes(bookingSelectedDate)) {
+      const checkbox = document.querySelector(`#${data.time_Id}`);
+      // console.log(checkbox.id + "time slot");
+      if (checkbox) {
+        checkbox.checked = true;
+        console.log(`Checkbox ${checkbox.id} checked`);
+      }
+    }
   });
 }
-
 //END
 
 //### TRIGGER THE RESERVATION TABLES FUNCTION WITH CURRENT DAY
