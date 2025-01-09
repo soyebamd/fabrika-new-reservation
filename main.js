@@ -27,7 +27,7 @@
 // 4. **Date Picker**: Allows users to select a different date and see available tables for that day.
 
 // ============================
-// Credits:
+// C#7d0101its:
 // ============================
 // Developed by: Soyeb Ahmed
 // Concept/Design by: Gloria Esposito (https://gloriaesposito.com/)
@@ -115,16 +115,6 @@ const showDisplayName = [
   showNames[2]["show_name"],
 ];
 
-function displayShowName(count) {
-  // Assuming you have a DOM element to display the show name
-
-  console.log("Invalid index or DOM element not found");
-}
-
-// FabrikaReservationTables.forEach(({ table_number }) => {
-//   console.log(table_number);
-// });
-
 const chooseLocation = document.querySelectorAll(".location");
 
 let currentDay = new Date().getDay(); //### Get the current day (0 = Sunday, ..., 6 = Saturday)
@@ -168,6 +158,12 @@ chooseLocation.forEach((location) => {
 });
 //END
 
+function displayShowName(count) {
+  // Assuming you have a DOM element to display the show name
+
+  console.log("Invalid index or DOM element not found");
+}
+
 function clearTables() {
   group1_tables.innerHTML = "";
   group2_tables.innerHTML = "";
@@ -185,9 +181,10 @@ let showId = "";
 function setShowID(setNewShowID) {
   showId = setNewShowID;
   console.log(showId);
-
   $("#datepicker-container").datepicker("refresh");
 }
+
+//END
 
 function show() {
   showNames.forEach((show) => {
@@ -206,14 +203,18 @@ function show() {
 
     firstItem.classList.add("active");
 
+    //### ON CLICK SHOW NAMES
     showItems.addEventListener("click", function () {
       showId = this.getAttribute("data_id");
       //   showName.textContent = show.show_name;
       setShowID(showId);
+
       document
         .querySelectorAll(".show-link")
         .forEach((link) => link.classList.remove("active"));
       this.classList.add("active");
+
+      ReservationTables(currentDay);
     });
   });
 }
@@ -223,6 +224,14 @@ show();
 //END
 
 function ReservationTables(currentDay) {
+  showName.textContent = "";
+  showDays.forEach((displayname, index) => {
+    if (displayname == currentDay) {
+      showName.textContent = showDisplayName[index];
+      displayShowName(showDisplayName[index]);
+    }
+  });
+
   //### TIME SLOT MANAGEMENT
   clearTimeSlot();
 
@@ -459,22 +468,22 @@ function ReservationTables(currentDay) {
     //### CREATE TABLES WITH OPTIONS ON FRONTEND MAIN.JS
     //### GROUP 1 TABLE  WITH A AND B TABLE NUMBER, ID row-AB
     if (tableData.table_number == "A" || tableData.table_number == "B") {
-      createTable(tableData, group1_tables, "red", currentDay);
+      createTable(tableData, group1_tables, "#7d0101", currentDay);
     }
 
     //### GROUP 2 TABLE  WITH 105 TO 109 TABLE NUMBER, ID row-109-105
     if (tableData.table_number >= 105 && tableData.table_number <= 109) {
-      createTable(tableData, group2_tables, "red", currentDay);
+      createTable(tableData, group2_tables, "#7d0101", currentDay);
     }
 
     //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
     if (tableData.table_number >= 100 && tableData.table_number <= 104) {
-      createTable(tableData, group3_tables, "violet", currentDay);
+      createTable(tableData, group3_tables, "#6d006d", currentDay);
     }
 
     //### GROUP 4 TABLE  WITH 305 TO 315 TABLE NUMBER, ID row-305-315
     if (tableData.table_number >= 305 && tableData.table_number <= 315) {
-      createTable(tableData, mezzanine_group1_tables, "violet", currentDay);
+      createTable(tableData, mezzanine_group1_tables, "#6d006d", currentDay);
     }
   });
 }
@@ -491,7 +500,7 @@ function createTable(data, tableGroup, color, currentDay) {
 
   createCol.classList.add("col");
   // createCol.style.backgroundColor = color;
-  createCol.innerHTML = `<div class="inputContain"><div class="card text-white fw-bold text-center" style="background-color:${color}">$${data.price}
+  createCol.innerHTML = `<div class="input-container"><div class="card text-white fw-bold text-center" style="background-color:${color}">$${data.price}
   <small style="font-size:10px;">${data.table_number}</small></div>
   </div>`;
 
@@ -508,6 +517,31 @@ function createTable(data, tableGroup, color, currentDay) {
 
     // console.log(selectedCheckboxes + "Checkeddd");
 
+    // Create label element
+    const label = document.createElement("label");
+    label.setAttribute("for", table_id); // Associate with checkbox using the same id
+    //  label.textContent = `Seat ${i}`; // Add text content for the label
+
+    // Create table image and insert in label
+
+    const tableImg = document.createElement("img");
+
+    tableImg.src = "/assets/Bar_Chairs_Back_Final_1x.webp";
+    tableImg.className = "table";
+
+    label.appendChild(tableImg);
+
+    function checkedImg(id) {
+      const labelId = document.querySelector(`label[for="${id}"]`);
+
+      const changeCheckedImg = labelId.querySelectorAll("img");
+
+      changeCheckedImg[0].setAttribute(
+        "src",
+        "/assets/Bar_Chairs_Back_Final.webp"
+      );
+    }
+
     if (
       selectedCheckboxes[table_id] &&
       selectedCheckboxes[table_id].includes(i)
@@ -519,6 +553,11 @@ function createTable(data, tableGroup, color, currentDay) {
     inputCheckbox.setAttribute("class", "form-check-input");
 
     inputCheckbox.addEventListener("change", function () {
+      // change checked seat image
+
+      if (this.checked) {
+        checkedImg(this.id);
+      }
       //### GET SLOT TIME
       const getTimeSlot = document.querySelectorAll(".show-times");
 
@@ -582,27 +621,28 @@ function createTable(data, tableGroup, color, currentDay) {
     });
 
     // inputCheckbox.appendChild(document.createTextNode(i));
-    const inputWrapper = tableGroup.querySelectorAll(".inputContain");
+    const inputWrapper = tableGroup.querySelectorAll(".input-container");
 
     inputWrapper.forEach((input) => {
       input.appendChild(inputCheckbox);
+      input.appendChild(label);
     });
 
     if (i % 2 === 0) {
-      // Insert every second checkbox before the inputContain element
       inputWrapper.forEach((input) => {
         input.parentNode.insertBefore(inputCheckbox, input);
+        input.parentNode.insertBefore(label, input);
       });
     } else {
-      // Append other checkboxes inside the inputContain element
       inputWrapper.forEach((input) => {
-        input.appendChild(inputCheckbox);
+        input.parentNode.insertBefore(inputCheckbox, input.nextSibling);
+        input.parentNode.insertBefore(label, input.nextSibling);
       });
     }
 
     // if (i % 2 === 0) {
     //   console.log(i + " Even");
-    //   inputCheckbox.style.border = "1px solid red";
+    //   inputCheckbox.style.border = "1px solid #7d0101";
     // }
   }
 }
@@ -663,6 +703,20 @@ $(function () {
     minDate: maxDay,
     //onload
     beforeShowDay: function (date) {
+      /*  
+      
+      ###GET TODAY DATE IF NEED
+
+      var today = new Date();
+      //var formattedDate = $.datepicker.formatDate("mm/dd/yy", date);
+      var currentDayFormatted = $.datepicker.formatDate("mm/dd/yy", date);
+
+      var todayFormatted = $.datepicker.formatDate("mm/dd/yy", today);
+
+      if (todayFormatted === currentDayFormatted) {
+        console.log(todayFormatted);
+      }*/
+
       if (showId === "bordello") {
         // If the day is Thursday (getDay() === 4), return [true] to make it active
         if (date.getDay() === 4) {
@@ -713,13 +767,6 @@ $(function () {
       //### TRIGGER THE RESERVATION TABLES FUNCTION
 
       //displayShowName.indexOf(showDays);
-      showName.textContent = "";
-      showDays.forEach((displayname, index) => {
-        if (displayname == currentDay) {
-          showName.textContent = showDisplayName[index];
-          displayShowName(showDisplayName[index]);
-        }
-      });
 
       ReservationTables(currentDay);
 

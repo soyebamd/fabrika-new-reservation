@@ -12,6 +12,11 @@
 
     <title>Fabrika Reservation Project</title>
     <style>
+      body {
+        background: #000;
+        color: #fff;
+      }
+
       #time-slot li {
         list-style: none;
         border: solid 2px;
@@ -21,6 +26,23 @@
       #time-slot li:hover {
         background-color: #f0f0f0;
         cursor: pointer;
+      }
+
+      .form-check-input {
+        display: none;
+      }
+
+      .table {
+        width: 22px;
+        cursor: pointer;
+      }
+
+      .table:active {
+        width: 28px;
+      }
+
+      .table:hover {
+        filter: contrast(0) brightness(5) grayscale(100%);
       }
 
       #time-slot input {
