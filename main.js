@@ -49,6 +49,10 @@ const result = document.querySelector("#result");
 
 const showDays = [0, 4, 5, 6];
 
+const showWrapper = document.querySelector("#show");
+
+const showName = document.querySelector("#show-name");
+
 // Main Floor
 const group1_tables = document.querySelector("#row-AB");
 
@@ -77,21 +81,45 @@ const seatingTime = {
 };
 
 const { weekTimeSlot, saturdayTimeSlot, sundayTimeSlot } = seatingTime;
-
-const showName = [
-  "Drag Brunch",
-  "Easter Sunday Drag Brunch",
-  "Easter Sunday 'Opus' Dinner",
-  "Bordello (Burlesque)",
-  "Opus (Variety Show)",
-  "Opus (Variety Show)",
-  "Boogie Brunch Saturday (Returning Fall 2024!)",
-  "Falsetto Thursday (Returning Fall 2024!)",
-  "Wonderland (Returning Fall 2024!)",
-  '"Daddy Issues" 1 PM SHOW',
-  "NYE 2024 Masquerade",
-  "A Nightmare Before Christmas",
+const showNames = [
+  {
+    show_id: "all",
+    show_name: "All",
+    show_link: "#",
+    show_description: "All Show",
+  },
+  {
+    show_id: "bordello",
+    show_name: "Bordello (Burlesque)",
+    show_link: "#",
+    show_description: "A night of burlesque.",
+  },
+  {
+    show_id: "opus",
+    show_name: "Opus (Variety Show)",
+    show_link: "#",
+    show_description: "A fun variety show with performances.",
+  },
+  {
+    show_id: "drag_brunch",
+    show_name: "Drag Brunch",
+    show_link: "#",
+    show_description: "Brunch with fabulous drag performances.",
+  },
 ];
+
+const showDisplayName = [
+  showNames[3]["show_name"],
+  showNames[1]["show_name"],
+  showNames[2]["show_name"],
+  showNames[2]["show_name"],
+];
+
+function displayShowName(count) {
+  // Assuming you have a DOM element to display the show name
+
+  console.log("Invalid index or DOM element not found");
+}
 
 // FabrikaReservationTables.forEach(({ table_number }) => {
 //   console.log(table_number);
@@ -149,9 +177,55 @@ function clearTables() {
 function clearTimeSlot() {
   timeSlotWrapper.innerHTML = "";
 }
+
+//### UPDATE DATEPICKER ACCORDING TO SHOW ID
+
+let showId = "";
+
+function setShowID(setNewShowID) {
+  showId = setNewShowID;
+  console.log(showId);
+
+  $("#datepicker-container").datepicker("refresh");
+}
+
+function show() {
+  showNames.forEach((show) => {
+    console.log("Show Name: " + show.show_name);
+    console.log("Show Link: " + show.show_link);
+    console.log("Show Description: " + show.show_description); // Logs the show description
+
+    const showItems = document.createElement("li");
+    showItems.textContent = show.show_name;
+    showItems.setAttribute("data_id", show.show_id);
+    showItems.className = "show-link";
+
+    showWrapper.appendChild(showItems);
+
+    const firstItem = document.querySelector(".show-link");
+
+    firstItem.classList.add("active");
+
+    showItems.addEventListener("click", function () {
+      showId = this.getAttribute("data_id");
+      //   showName.textContent = show.show_name;
+      setShowID(showId);
+      document
+        .querySelectorAll(".show-link")
+        .forEach((link) => link.classList.remove("active"));
+      this.classList.add("active");
+    });
+  });
+}
+
+show();
+
+//END
+
 function ReservationTables(currentDay) {
   //### TIME SLOT MANAGEMENT
   clearTimeSlot();
+
   // convert to stagndard time
 
   function convertTime(time24) {
@@ -584,12 +658,34 @@ if (currentDay == showDays[currentDay]) ReservationTables(showDays[currentDay]);
 $(function () {
   const maxDay = new Date();
 
-  const todayFormatted = $.datepicker.formatDate("mm/dd/yy", maxDay); //
   // Initialize the datepicker
   $("#datepicker-container").datepicker({
     minDate: maxDay,
     //onload
     beforeShowDay: function (date) {
+      if (showId === "bordello") {
+        // If the day is Thursday (getDay() === 4), return [true] to make it active
+        if (date.getDay() === 4) {
+          currentDay = 4;
+          return [true]; // Enable Thursday
+        }
+        return [false]; // Disable other days
+      } else if (showId === "opus") {
+        currentDay = 5;
+        // If the day is Thursday (getDay() === 4), return [true] to make it active
+        if (date.getDay() === 5 || date.getDay() === 6) {
+          return [true]; // Enable Thursday
+        }
+        return [false]; // Disable other days
+      } else if (showId === "drag_brunch") {
+        currentDay = 0;
+        // If the day is Thursday (getDay() === 4), return [true] to make it active
+        if (date.getDay() === 0) {
+          return [true]; // Enable Thursday
+        }
+        return [false]; // Disable other days
+      }
+
       return [true];
     },
     onSelect: function (dateText, inst) {
@@ -615,6 +711,15 @@ $(function () {
       currentDay = dayOfWeek;
 
       //### TRIGGER THE RESERVATION TABLES FUNCTION
+
+      //displayShowName.indexOf(showDays);
+      showName.textContent = "";
+      showDays.forEach((displayname, index) => {
+        if (displayname == currentDay) {
+          showName.textContent = showDisplayName[index];
+          displayShowName(showDisplayName[index]);
+        }
+      });
 
       ReservationTables(currentDay);
 
