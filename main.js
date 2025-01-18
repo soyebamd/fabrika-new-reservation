@@ -47,11 +47,46 @@ import { FabrikaReservationTables } from "./src/reservationTables.js";
 
 const result = document.querySelector("#result");
 
+// Base to trace days
 const showDays = [0, 4, 5, 6];
+
+//Min Spend
+const minSpend = [0, 0, 0, 0];
+const minSpendArray = [...minSpend];
+
+//Show Starting Time
+const showStartingTime = ["1:00 PM", "7:30 PM", "8:00 PM", "7:30 PM"];
+let showStartingTimeArray = [...showStartingTime];
 
 const showWrapper = document.querySelector("#show");
 
-const showName = document.querySelector("#show-name");
+const showName = document.querySelector("#show-name-span");
+
+const showStartSpan = document.querySelector("#show-start-span");
+
+const getBookedDay = document.querySelector("#show-day-span");
+
+const showDate = document.querySelector("#show-date");
+
+let daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+let showEventShow = false;
+
+function showEvent(show) {
+  showEventShow = show;
+
+  eventWrapper.style.display = show ? "block" : "none";
+}
+
+const eventWrapper = document.querySelector("#events");
 
 // Main Floor
 const group1_tables = document.querySelector("#row-AB");
@@ -62,6 +97,11 @@ const group3_tables = document.querySelector("#row-104-100");
 
 //Mezzanine Floor
 const mezzanine_group1_tables = document.querySelector("#row-305-315");
+
+//checkout div
+const checkout = document.querySelector("#checkout");
+
+checkout;
 
 let total = 0;
 
@@ -119,9 +159,16 @@ const chooseLocation = document.querySelectorAll(".location");
 
 let currentDay = new Date().getDay(); //### Get the current day (0 = Sunday, ..., 6 = Saturday)
 
-let bookingDate;
+let bookingDate = new Date();
+
+bookingDate = $.datepicker.formatDate("mm/dd/yy", bookingDate);
+
 // get reservation info in array
 const reservationData = [];
+
+eventWrapper.style.display = "none";
+
+// Add minSpend to array according to day
 
 //### GET THE DEFAULT LOCATION VALUE
 if (chooseLocation.length > 0) {
@@ -224,6 +271,11 @@ show();
 //END
 
 function ReservationTables(currentDay) {
+  console.log("Display by Default");
+
+  console.log(bookingDate + "Current Date");
+
+  // Get current show
   showName.textContent = "";
   showDays.forEach((displayname, index) => {
     if (displayname == currentDay) {
@@ -231,6 +283,17 @@ function ReservationTables(currentDay) {
       displayShowName(showDisplayName[index]);
     }
   });
+
+  // Get current Day
+  getBookedDay.textContent = daysOfWeek[currentDay];
+
+  // Show Starting Time
+  showStartSpan.textContent =
+    showStartingTimeArray[showDays.indexOf(currentDay)];
+
+  // show Date
+
+  showDate.textContent = bookingDate;
 
   //### TIME SLOT MANAGEMENT
   clearTimeSlot();
@@ -284,6 +347,11 @@ function ReservationTables(currentDay) {
 
       //console.log(time_id + "dddddddddddddddddddddddddddddddddddd");
 
+      wrapTimeSlots_input.addEventListener("change", function () {
+        console.log("Event changing");
+        showEvent(true);
+      });
+
       // Initialize or check if the time slot is already selected for this location
       if (
         selectedTime[showLocation] &&
@@ -293,6 +361,7 @@ function ReservationTables(currentDay) {
       } else {
         wrapTimeSlots_input.checked = false; // Deselect if it's not selected
       }
+
       // Handle change event when a time slot is selected or deselected
       wrapTimeSlots_input.addEventListener("change", function () {
         if (this.checked) {
@@ -524,23 +593,23 @@ function createTable(data, tableGroup, color, currentDay) {
 
     // Create table image and insert in label
 
-    const tableImg = document.createElement("img");
+    // const tableImg = document.createElement("img");
 
-    tableImg.src = "/assets/Bar_Chairs_Back_Final_1x.webp";
-    tableImg.className = "table";
+    // tableImg.src = "/assets/Bar_Chairs_Back_Final_1x.webp";
+    // tableImg.className = "table";
 
-    label.appendChild(tableImg);
+    // label.appendChild(tableImg);
 
-    function checkedImg(id) {
-      const labelId = document.querySelector(`label[for="${id}"]`);
+    // function checkedImg(id) {
+    //   const labelId = document.querySelector(`label[for="${id}"]`);
 
-      const changeCheckedImg = labelId.querySelectorAll("img");
+    //   const changeCheckedImg = labelId.querySelectorAll("img");
 
-      changeCheckedImg[0].setAttribute(
-        "src",
-        "/assets/Bar_Chairs_Back_Final.webp"
-      );
-    }
+    //   changeCheckedImg[0].setAttribute(
+    //     "src",
+    //     "/assets/Bar_Chairs_Back_Final.webp"
+    //   );
+    // }
 
     if (
       selectedCheckboxes[table_id] &&
@@ -555,10 +624,11 @@ function createTable(data, tableGroup, color, currentDay) {
     inputCheckbox.addEventListener("change", function () {
       // change checked seat image
 
-      if (this.checked) {
-        checkedImg(this.id);
-      }
+      // if (this.checked) {
+      //   checkedImg(this.id);
+      // }
       //### GET SLOT TIME
+
       const getTimeSlot = document.querySelectorAll(".show-times");
 
       let slotTime;
@@ -566,13 +636,18 @@ function createTable(data, tableGroup, color, currentDay) {
 
       getTimeSlot.forEach((slot) => {
         if (slot.checked) {
+          console.log("slot are checked");
+
           slotTime = slot.value;
           slotTimeID = slot.id;
         }
       });
       //END
       //### IF CHECKED REMAIN CHECKED OPTION
+
       if (this.checked) {
+        console.log("checkbox checked");
+
         if (!selectedCheckboxes[table_id]) {
           selectedCheckboxes[table_id] = [];
         }
@@ -583,8 +658,18 @@ function createTable(data, tableGroup, color, currentDay) {
 
         total += data.price; // Add the table price when checked
 
+        console.log(currentDay + "current selected date");
+
+        let currentShowDay;
+
+        if (showDays.includes(currentDay)) {
+          currentShowDay = showDays.indexOf(currentDay);
+          console.log(currentShowDay + "current Day");
+        }
+
         //### ADD DATA TO ARRAY
         reservationData.push({
+          show_name: showDisplayName[currentShowDay],
           table_id: table_id,
           table_number: data.table_number,
           table_price: data.price,
@@ -594,7 +679,7 @@ function createTable(data, tableGroup, color, currentDay) {
           time_Id: slotTimeID,
         });
 
-        console.log(reservationData);
+        updateTableDisplay(this);
 
         //END
       } else {
@@ -616,7 +701,52 @@ function createTable(data, tableGroup, color, currentDay) {
         if (removeBookingIndex !== -1) {
           reservationData.splice(removeBookingIndex, 1);
           console.log("Removed Reservation:", reservationData);
+          updateTableDisplay();
         }
+      }
+
+      function updateTableDisplay(isTimeSelected) {
+        checkout.innerHTML = "";
+        reservationData.forEach((data, index) => {
+          if (data.time_slot === undefined) {
+            alert("Please select time slot first");
+
+            isTimeSelected.checked = false;
+            reservationData.splice(index, 1);
+          } else {
+            // Add each reservation's data to the HTML string
+            checkout.innerHTML += `
+            <div class="reservation-item">
+               <p>#${index + 1}</p>
+                <p><strong>Show Name</strong>: ${data.show_name}</p>
+
+                 <p><strong>Show Day</strong>: ${"x"}</p>
+              
+               <p><strong>Date</strong>: ${data.table_booking_date}</p>
+               <p><strong>Seating Time</strong>: ${data.time_slot}</p>
+
+
+
+                 <p><strong>${data.table_location}</strong>: $${
+              data.table_price
+            }</p>
+
+                 
+
+
+
+
+               
+            <p>For dev use only:</p> 
+  <p><strong>Table</strong>: ${data.table_number}</p>
+                
+               
+               
+              
+            </div>
+        `;
+          }
+        });
       }
     });
 
@@ -717,6 +847,8 @@ $(function () {
         console.log(todayFormatted);
       }*/
 
+      console.log("bookingDate" + bookingDate);
+
       if (showId === "bordello") {
         // If the day is Thursday (getDay() === 4), return [true] to make it active
         if (date.getDay() === 4) {
@@ -738,6 +870,13 @@ $(function () {
           return [true]; // Enable Thursday
         }
         return [false]; // Disable other days
+      }
+
+      var day = date.getDay();
+
+      // Disable Monday (1), Tuesday (2), Wednesday (3)
+      if (day == 1 || day == 2 || day == 3) {
+        return [false]; // Disable these days
       }
 
       return [true];

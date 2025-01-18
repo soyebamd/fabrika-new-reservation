@@ -28,9 +28,13 @@
         cursor: pointer;
       }
 
-      .form-check-input {
-        display: none;
-      }
+      #checkout{
+        position: absolute;
+        right: 0;
+        top: 0;
+        border: solid 2px;
+        padding: 15px;
+}
 
       .table {
         width: 22px;
@@ -46,7 +50,7 @@
       }
 
       #time-slot input {
-        display: none;
+        display: block;
       }
 
       #time-slot input:checked + li {
@@ -65,66 +69,103 @@
   <body>
     <!-- Content Section -->
     <div class="container">
-      <h1>Show</h1>
-      <div id="show"></div>
+    <div class="row">
+      <div class="col">
+      <!-- Title -->
       <h1>Fabrika Reservation</h1>
-      <p>Select show date:</p>
+      <!-- Display all show -->
+      <h4 class="my-5">All Shows</h4>
+      <div id="show"></div>
+      <!-- Select Date -->
+      <h4>Select Date:</h4>
       <div id="datepicker-container"></div>
 
       <table id="result" border="1" class="d-none"></table>
+</div>
 
-      <h2 id="show-name"></h2>
+ <div class="col">
 
-      <div id="time-slot"></div>
+    <form id="cart-form" action="" method="POST" data-gtm-form-interact-id="0">
 
-      <input
-        type="radio"
-        id="main_floor"
-        name="layout"
-        value="Main Floor"
-        class="location"
-      />
-      <label for="main_floor">Main Floor</label>
-      <input
-        type="radio"
-        id="mezzanine_floor"
-        name="layout"
-        value="Mezzanine Floor"
-        class="location"
-      />
-      <label for="mezzanine_floor">Mezzanine Floor</label>
 
-      <!-- Main Floor -->
-      <div class="container-fluid">
-        <div class="row">
-          <!-- 1st row B,A -->
-          <div class="col d-flex w-100 gap-4">
-            <!-- GROUP 1 TABLE WITH A AND B TABLE NUMBER, ID row-AB -->
-            <div class="row w-100 flex-row-reverse" id="row-AB">
-              <!-- 1st add dynamically from javascript -->
+           <h4 class="my-5" >Show Details</h4>
+
+         
+           <p> <strong>Show Name:</strong> <span id="show-name-span">Opus (Variety Show)</span> </p>
+           <p> <strong>Show Day:</strong> <span id="show-day-span"></span> </p>
+           <p> <strong>Show Start At:</strong> <span id="show-start-span"></span> </p>
+           <p> <strong>Show Date</strong> <span id="show-date"></span> </p>
+
+</form>
+
+ 
+
+
+
+      <h4 class="my-5">Select Show time:</h4>
+
+
+
+
+      <div id="time-slot"></div></div>
+
+      
+    </div>
+
+    <div class="container">
+      <div id="events">
+        <h4 class="my-5">Select Event:</h4>
+        <input
+          type="radio"
+          id="main_floor"
+          name="layout"
+          value="Main Floor"
+          class="location"
+        />
+        <label for="main_floor">Main Floor</label>
+        <input
+          type="radio"
+          id="mezzanine_floor"
+          name="layout"
+          value="Mezzanine Floor"
+          class="location"
+        />
+        <label for="mezzanine_floor">Mezzanine Floor</label>
+
+        <!-- Main Floor -->
+        <div class="container-fluid">
+          <div class="row">
+            <!-- 1st row B,A -->
+            <div class="col d-flex w-100 gap-4">
+              <!-- GROUP 1 TABLE WITH A AND B TABLE NUMBER, ID row-AB -->
+              <div class="row w-100 flex-row-reverse" id="row-AB">
+                <!-- 1st add dynamically from javascript -->
+              </div>
+
+              <!-- 2nd row 109, 105 -->
+              <!-- GROUP 2 TABLE WITH 105 TO 109 TABLE NUMBER, ID row-109-105 -->
+              <div class="row w-100 flex-row-reverse" id="row-109-105"></div>
+
+              <!-- 3rd row 108, 104 -->
+              <!-- GROUP 3 TABLE WITH 100 TO 104 TABLE NUMBER, ID row-104-100 -->
+              <div class="row w-100 flex-row-reverse" id="row-104-100"></div>
             </div>
 
-            <!-- 2nd row 109, 105 -->
-            <!-- GROUP 2 TABLE WITH 105 TO 109 TABLE NUMBER, ID row-109-105 -->
-            <div class="row w-100 flex-row-reverse" id="row-109-105"></div>
-
-            <!-- 3rd row 108, 104 -->
-            <!-- GROUP 3 TABLE WITH 100 TO 104 TABLE NUMBER, ID row-104-100 -->
-            <div class="row w-100 flex-row-reverse" id="row-104-100"></div>
+            <div class="col"></div>
           </div>
-
-          <div class="col"></div>
         </div>
-      </div>
 
-      <!-- Mezzanine Floor -->
-      <div class="container-fluid">
-        <!-- 1st row 305 - 315 -->
-        <!-- GROUP 4 TABLE WITH 305 TO 315 TABLE NUMBER, ID row-305-315 -->
-        <div class="row w-100 flex-row-reverse" id="row-305-315"></div>
+        <!-- Mezzanine Floor -->
+        <div class="container-fluid">
+          <!-- 1st row 305 - 315 -->
+          <!-- GROUP 4 TABLE WITH 305 TO 315 TABLE NUMBER, ID row-305-315 -->
+          <div class="row w-100 flex-row-reverse" id="row-305-315"></div>
+        </div>
       </div>
     </div>
 
+
+    <div id="checkout"></div>
     <!-- External CSS and Scripts -->
     <link
       rel="stylesheet"
