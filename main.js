@@ -51,8 +51,17 @@ const result = document.querySelector("#result");
 const showDays = [0, 4, 5, 6];
 
 //Min Spend
-const minSpend = [0, 0, 0, 0];
-const minSpendArray = [...minSpend];
+const minSpend = [0, 0, 50, 100];
+let minSpendArray = [...minSpend];
+
+//Show Hours
+const showHours = [
+  "1:00 PM to 2:00PM",
+  "7:30 PM - 8:00PM",
+  "8:00 PM - 9:00PM",
+  "7:30 PM to Close",
+];
+let showHoursArray = [...showHours];
 
 //Show Starting Time
 const showStartingTime = ["1:00 PM", "7:30 PM", "8:00 PM", "7:30 PM"];
@@ -66,7 +75,11 @@ const showStartSpan = document.querySelector("#show-start-span");
 
 const getBookedDay = document.querySelector("#show-day-span");
 
+const minSpendSpan = document.querySelector("#min-spend");
+
 const showDate = document.querySelector("#show-date");
+
+const showHoursSpan = document.querySelector("#show-hours");
 
 let daysOfWeek = [
   "Sunday",
@@ -284,16 +297,40 @@ function ReservationTables(currentDay) {
     }
   });
 
+  const dayofWeek = daysOfWeek[currentDay];
+
   // Get current Day
-  getBookedDay.textContent = daysOfWeek[currentDay];
+  getBookedDay.textContent = dayofWeek;
+
+  // Conditional requirment for starting time
+  /* if (bookingDate === "01/24/2025") {
+  
+    showStartingTimeArray[showDays.indexOf(currentDay)] = "22:00 PM";
+  } else {
+    showStartingTimeArray = [...showStartingTime];
+  }*/
+  // End
 
   // Show Starting Time
   showStartSpan.textContent =
     showStartingTimeArray[showDays.indexOf(currentDay)];
 
+  //Min Spend Block
+  // Conditional requirment for Min Spend
+  /*if (bookingDate === "01/24/2025") {
+    minSpendArray[showDays.indexOf(currentDay)] = 150;
+  } else {
+    minSpendArray = [...minSpend];
+  }*/
+  // End
+  minSpendSpan.textContent = `$${minSpendArray[showDays.indexOf(currentDay)]}`;
+  // End MinSpend
   // show Date
 
   showDate.textContent = bookingDate;
+
+  // Show Hours
+  showHoursSpan.textContent = showHoursArray[showDays.indexOf(currentDay)];
 
   //### TIME SLOT MANAGEMENT
   clearTimeSlot();
