@@ -3,14 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fabrika Reservation Project</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
-
-    <title>Fabrika Reservation Project</title>
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css"
+    />
     <style>
       body {
         background: #000;
@@ -23,13 +26,18 @@
         margin: 10px;
         padding: 3px 5px;
       }
+
       #time-slot li:hover {
         background-color: #f0f0f0;
         cursor: pointer;
       }
 
-      .form-check-input {
-        display: none;
+      #checkout {
+        position: absolute;
+        right: 0;
+        top: 0;
+        border: solid 2px;
+        padding: 15px;
       }
 
       .table {
@@ -53,86 +61,233 @@
         background-color: #690202;
         color: #fff;
       }
+
       #show li {
         cursor: pointer;
       }
+
       #show li.active,
-      #show :hover {
+      #show li:hover {
         color: red;
       }
+      #customer-information {
+        max-width: 500px;
+      }
     </style>
-    <script type="module" crossorigin src="/assets/index-CdrOpwwB.js"></script>
+    <script type="module" crossorigin src="/assets/index-Cd-z8ygI.js"></script>
   </head>
   <body>
-    <!-- Content Section -->
     <div class="container">
-      <h1>Show</h1>
-      <div id="show"></div>
-      <h1>Fabrika Reservation</h1>
-      <p>Select show date:</p>
-      <div id="datepicker-container"></div>
+      <div class="row">
+        <!-- Left Column -->
+        <div class="col">
+          <h1>Fabrika Reservation</h1>
+          <h4 class="my-5">All Shows</h4>
+          <div id="show"></div>
 
-      <table id="result" border="1" class="d-none"></table>
+          <h4>Select Date:</h4>
+          <div id="datepicker-container"></div>
+          <table id="result" border="1" class="d-none"></table>
+        </div>
 
-      <h2 id="show-name"></h2>
+        <!-- Right Column -->
+        <div class="col" id="show-info">
+          <form id="cart-form" method="POST">
+            <h4 class="my-5">Show Details</h4>
+            <p>
+              <strong>Show Name:</strong>
+              <span id="show-name-span">Opus (Variety Show)</span>
+            </p>
+            <p><strong>Show Day:</strong> <span id="show-day-span"></span></p>
+            <p>
+              <strong>Show Start At:</strong> <span id="show-start-span"></span>
+            </p>
+            <p><strong>Show Date:</strong> <span id="show-date"></span></p>
+            <p><strong>Minimum Spend:</strong> <span id="min-spend"></span></p>
+            <p><strong>Show Hours:</strong> <span id="show-hours"></span></p>
 
-      <div id="time-slot"></div>
-
-      <input
-        type="radio"
-        id="main_floor"
-        name="layout"
-        value="Main Floor"
-        class="location"
-      />
-      <label for="main_floor">Main Floor</label>
-      <input
-        type="radio"
-        id="mezzanine_floor"
-        name="layout"
-        value="Mezzanine Floor"
-        class="location"
-      />
-      <label for="mezzanine_floor">Mezzanine Floor</label>
-
-      <!-- Main Floor -->
-      <div class="container-fluid">
-        <div class="row">
-          <!-- 1st row B,A -->
-          <div class="col d-flex w-100 gap-4">
-            <!-- GROUP 1 TABLE WITH A AND B TABLE NUMBER, ID row-AB -->
-            <div class="row w-100 flex-row-reverse" id="row-AB">
-              <!-- 1st add dynamically from javascript -->
-            </div>
-
-            <!-- 2nd row 109, 105 -->
-            <!-- GROUP 2 TABLE WITH 105 TO 109 TABLE NUMBER, ID row-109-105 -->
-            <div class="row w-100 flex-row-reverse" id="row-109-105"></div>
-
-            <!-- 3rd row 108, 104 -->
-            <!-- GROUP 3 TABLE WITH 100 TO 104 TABLE NUMBER, ID row-104-100 -->
-            <div class="row w-100 flex-row-reverse" id="row-104-100"></div>
-          </div>
-
-          <div class="col"></div>
+            <h4 class="my-5">Select Show time:</h4>
+            <div id="time-slot"></div>
+          </form>
         </div>
       </div>
 
-      <!-- Mezzanine Floor -->
-      <div class="container-fluid">
-        <!-- 1st row 305 - 315 -->
-        <!-- GROUP 4 TABLE WITH 305 TO 315 TABLE NUMBER, ID row-305-315 -->
-        <div class="row w-100 flex-row-reverse" id="row-305-315"></div>
+      <!-- Seating Selection Section -->
+      <div class="container">
+        <div id="events">
+          <h4 class="my-5">Select Event:</h4>
+          <div class="mb-3">
+            <input
+              type="radio"
+              id="main_floor"
+              name="layout"
+              value="Main Floor"
+              class="location"
+            />
+            <label for="main_floor">Main Floor</label>
+            <input
+              type="radio"
+              id="mezzanine_floor"
+              name="layout"
+              value="Mezzanine Floor"
+              class="location"
+            />
+            <label for="mezzanine_floor">Mezzanine Floor</label>
+          </div>
+
+          <!-- Main Floor Layout -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col d-flex w-100 gap-4">
+                <!-- Row AB -->
+                <div class="row w-100 flex-row-reverse" id="row-AB"></div>
+                <!-- Row 109-105 -->
+                <div class="row w-100 flex-row-reverse" id="row-109-105"></div>
+                <!-- Row 104-100 -->
+                <div class="row w-100 flex-row-reverse" id="row-104-100"></div>
+              </div>
+              <div class="col"></div>
+            </div>
+          </div>
+
+          <!-- Mezzanine Floor Layout -->
+          <div class="container-fluid">
+            <div class="row w-100 flex-row-reverse" id="row-305-315"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Information Section -->
+      <div id="customer-information" class="mt-5">
+        <div class="special-requests mb-4">
+          <strong>Special Requests/Notes:</strong>
+          <p>
+            (All tickets must be purchased together to guarantee seating. Please
+            contact the venue if you need to increase your party size, or if you
+            are a large group of 15+)
+          </p>
+        </div>
+
+        <h2 class="mb-4">Are You Celebrating a Birthday:</h2>
+        <div class="birthday-selection mb-4">
+          <div class="form-group d-flex flex-start mb-2">
+            <input
+              class="form-check-input cbx hidden"
+              type="radio"
+              name="celebrating"
+              id="celebrating-yes"
+              value="Yes"
+            />
+            <label
+              class="form-check-label lbl mr-1"
+              for="celebrating-yes"
+            ></label>
+            <span>Yes</span>
+          </div>
+          <div class="form-group d-flex flex-start">
+            <input
+              class="form-check-input cbx hidden"
+              type="radio"
+              name="celebrating"
+              id="celebrating-no"
+              value="No"
+              checked
+            />
+            <label
+              class="form-check-label lbl mr-1"
+              for="celebrating-no"
+            ></label>
+            <span>No</span>
+          </div>
+        </div>
+
+        <h2 class="mb-4">Please complete for checkout.</h2>
+        <div class="customer-form">
+          <div class="mb-3">
+            <label for="cart_customerName">First Name</label>
+            <input
+              type="text"
+              id="cart_customerName"
+              class="form-control"
+              name="cart_customerName"
+              placeholder="First Name"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="cart_customerLastName">Last Name</label>
+            <input
+              type="text"
+              id="cart_customerLastName"
+              class="form-control"
+              name="cart_customerLastName"
+              placeholder="Last Name"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="cart_customerEmail">Email</label>
+            <input
+              type="email"
+              id="cart_customerEmail"
+              class="form-control"
+              name="cart_customerEmail"
+              placeholder="Email"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="cart_customerPhone">Phone Number</label>
+            <input
+              type="tel"
+              id="cart_customerPhone"
+              class="form-control"
+              name="cart_customerPhone"
+              placeholder="Phone Number"
+              required
+            />
+          </div>
+
+          <div class="form-check mb-3">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="subscribeCheckbox"
+              name="subscribeCheckbox"
+              checked
+            />
+            <label class="form-check-label" for="subscribeCheckbox"
+              >Subscribe to our newsletter</label
+            >
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            name="submit"
+            id="cart-button"
+          >
+            Add to Cart
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- External CSS and Scripts -->
-    <link
-      rel="stylesheet"
-      href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css"
-    />
+    <div id="checkout"></div>
+
+    <!-- Payment Form -->
+    <form
+      id="payment-form"
+      action="/tickets/checkout"
+      method="POST"
+      class="hidden"
+    ></form>
+
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
-
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
   </body>
 </html>

@@ -81,6 +81,10 @@ const showDate = document.querySelector("#show-date");
 
 const showHoursSpan = document.querySelector("#show-hours");
 
+const showInfo = document.querySelector("#show-info");
+
+const customerInformation = document.querySelector("#customer-information");
+customerInformation.style.display = "none";
 let daysOfWeek = [
   "Sunday",
   "Monday",
@@ -92,6 +96,7 @@ let daysOfWeek = [
 ];
 
 let showEventShow = false;
+let showInfoDisplay = false;
 
 function showEvent(show) {
   showEventShow = show;
@@ -265,6 +270,9 @@ function show() {
 
     //### ON CLICK SHOW NAMES
     showItems.addEventListener("click", function () {
+      showInfoDisplay = false;
+      eventWrapper.style.display = "none";
+      console.log(showInfoDisplay);
       showId = this.getAttribute("data_id");
       //   showName.textContent = show.show_name;
       setShowID(showId);
@@ -277,6 +285,8 @@ function show() {
       ReservationTables(currentDay);
     });
   });
+
+  console.log("Show IDDDDDDDDDDDDDDDDDDDDDDD");
 }
 
 show();
@@ -287,6 +297,11 @@ function ReservationTables(currentDay) {
   console.log("Display by Default");
 
   console.log(bookingDate + "Current Date");
+
+  console.log(currentDay + "Current DAY");
+
+  // show info only in default show date
+  showInfo.style.display = showInfoDisplay ? "block" : "none";
 
   // Get current show
   showName.textContent = "";
@@ -384,11 +399,6 @@ function ReservationTables(currentDay) {
 
       //console.log(time_id + "dddddddddddddddddddddddddddddddddddd");
 
-      wrapTimeSlots_input.addEventListener("change", function () {
-        console.log("Event changing");
-        showEvent(true);
-      });
-
       // Initialize or check if the time slot is already selected for this location
       if (
         selectedTime[showLocation] &&
@@ -401,7 +411,39 @@ function ReservationTables(currentDay) {
 
       // Handle change event when a time slot is selected or deselected
       wrapTimeSlots_input.addEventListener("change", function () {
+        // if (reservationData.time_slot == wrapTimeSlots_input.value) {
+        //   console.log("Value " + reservationData.time_slot);
+        // }
+
+        // First, uncheck all checkboxes
+        const resetOnTimeChange =
+          document.querySelectorAll(".form-check-input");
+        resetOnTimeChange.forEach((reset) => {
+          reset.checked = false;
+        });
+
+        showEvent(true);
+
         if (this.checked) {
+          // Find and check the corresponding checkbox
+          console.log(reservationData);
+
+          reservationData.forEach((reservation) => {
+            console.log("Time slot value:", wrapTimeSlots_input.value);
+
+            // Check if this reservation has the same time slot
+            if (wrapTimeSlots_input.value === reservation.time_slot) {
+              const checkboxes = document.querySelectorAll(".form-check-input");
+
+              checkboxes.forEach((checkbox) => {
+                // Check if checkbox ID matches the reservation's table_id
+                if (checkbox.id === reservation.table_id) {
+                  checkbox.checked = true;
+                }
+              });
+            }
+          });
+
           //   console.log(this.id + " checkbox id");
 
           // Initialize the selectedTime object for the current location if not already done
@@ -697,16 +739,20 @@ function createTable(data, tableGroup, color, currentDay) {
 
         console.log(currentDay + "current selected date");
 
+        let showName;
+
         let currentShowDay;
 
         if (showDays.includes(currentDay)) {
-          currentShowDay = showDays.indexOf(currentDay);
-          console.log(currentShowDay + "current Day");
+          showName = showDays.indexOf(currentDay);
+          currentShowDay = daysOfWeek[currentDay];
+          console.log(showName + "current Day");
         }
 
         //### ADD DATA TO ARRAY
         reservationData.push({
-          show_name: showDisplayName[currentShowDay],
+          show_name: showDisplayName[showName],
+          show_day: currentShowDay,
           table_id: table_id,
           table_number: data.table_number,
           table_price: data.price,
@@ -738,51 +784,56 @@ function createTable(data, tableGroup, color, currentDay) {
         if (removeBookingIndex !== -1) {
           reservationData.splice(removeBookingIndex, 1);
           console.log("Removed Reservation:", reservationData);
+
           updateTableDisplay();
+          customerInformation.style.display =
+            removeBookingIndex == 0 ? "none" : "block";
         }
       }
 
       function updateTableDisplay(isTimeSelected) {
         checkout.innerHTML = "";
+
+        // Create a map to track unique table_id + time_slot combinations
+        const uniqueReservations = new Map();
+
+        // Process reservations to keep only the latest entry for duplicate table_id + time_slot
         reservationData.forEach((data, index) => {
           if (data.time_slot === undefined) {
             alert("Please select time slot first");
-
             isTimeSelected.checked = false;
             reservationData.splice(index, 1);
-          } else {
-            // Add each reservation's data to the HTML string
-            checkout.innerHTML += `
-            <div class="reservation-item">
-               <p>#${index + 1}</p>
-                <p><strong>Show Name</strong>: ${data.show_name}</p>
-
-                 <p><strong>Show Day</strong>: ${"x"}</p>
-              
-               <p><strong>Date</strong>: ${data.table_booking_date}</p>
-               <p><strong>Seating Time</strong>: ${data.time_slot}</p>
-
-
-
-                 <p><strong>${data.table_location}</strong>: $${
-              data.table_price
-            }</p>
-
-                 
-
-
-
-
-               
-            <p>For dev use only:</p> 
-  <p><strong>Table</strong>: ${data.table_number}</p>
-                
-               
-               
-              
-            </div>
-        `;
+            return;
           }
+
+          const key = `${data.table_id}_${data.time_slot}`;
+          uniqueReservations.set(key, { data, index });
+        });
+
+        // Clear existing reservationData array
+        reservationData.length = 0;
+
+        // Rebuild reservationData and display with unique entries
+        uniqueReservations.forEach(({ data, index }) => {
+          // Add back to reservationData
+          reservationData.push(data);
+
+          // Show/hide customer information
+          customerInformation.style.display = "block";
+
+          // Add reservation to display
+          checkout.innerHTML += `
+      <div class="reservation-item">
+        <p>#${index + 1}</p>
+        <p><strong>Show Name</strong>: ${data.show_name}</p>
+        <p><strong>Show Day</strong>: ${data.show_day}</p>
+        <p><strong>Date</strong>: ${data.table_booking_date}</p>
+        <p><strong>Seating Time</strong>: ${data.time_slot}</p>
+        <p><strong>${data.table_location}</strong>: $${data.table_price}</p>
+        <p>For dev use only:</p>
+        <p><strong>Table</strong>: ${data.table_id}</p>
+      </div>
+    `;
         });
       }
     });
@@ -822,6 +873,7 @@ function resetData(bookingSelectedDate) {
   const selectedSeatReset = document.querySelectorAll(".form-check-input");
   selectedSeatReset.forEach((reset) => {
     reset.checked = false;
+    console.log("Can log here");
   });
 
   // Then, check boxes that match reservations for the selected date
@@ -943,6 +995,10 @@ $(function () {
       //### TRIGGER THE RESERVATION TABLES FUNCTION
 
       //displayShowName.indexOf(showDays);
+
+      showInfoDisplay = true;
+
+      console.log(showInfoDisplay + "Show info");
 
       ReservationTables(currentDay);
 
