@@ -66,7 +66,18 @@ let showHoursArray = [...showHours];
 //Show Starting Time
 const showStartingTime = ["1:00 PM", "7:30 PM", "8:00 PM", "7:30 PM"];
 let showStartingTimeArray = [...showStartingTime];
+// #End
+//Show features image
+const featureImage = document.querySelector("#featured-image");
 
+const showFeatureImage = [
+  "https://fabrikaphilly.com/wp-content/uploads/2024/08/sunday-drag-brunch.jpg",
+  "https://fabrikaphilly.com/wp-content/uploads/2024/08/thursday-burlesque.jpeg",
+  "https://fabrikaphilly.com/wp-content/uploads/2024/07/DSC04654.jpeg",
+  "https://fabrikaphilly.com/wp-content/uploads/2024/07/DSC04654.jpeg",
+];
+let showFeatureImageArray = [...showFeatureImage];
+// #End
 const showWrapper = document.querySelector("#show");
 
 const showName = document.querySelector("#show-name-span");
@@ -104,6 +115,17 @@ function showEvent(show) {
   eventWrapper.style.display = show ? "block" : "none";
 }
 
+// Feature Image Display
+function featureImageDisplay(url) {
+  featureImage.innerHTML = "";
+  const featureImg = document.createElement("img");
+  featureImg.src = url;
+  featureImg.className = "feature-image img-fluid";
+
+  featureImage.appendChild(featureImg);
+}
+// End
+
 const eventWrapper = document.querySelector("#events");
 
 // Main Floor
@@ -138,6 +160,8 @@ const seatingTime = {
   sundayTimeSlot: ["7:00", "12:15", "12:30", "12:45", "13:00"],
 };
 
+let showId = "";
+
 const { weekTimeSlot, saturdayTimeSlot, sundayTimeSlot } = seatingTime;
 const showNames = [
   {
@@ -166,16 +190,69 @@ const showNames = [
   },
 ];
 
-const showDisplayName = [
-  showNames[3]["show_name"],
-  showNames[1]["show_name"],
-  showNames[2]["show_name"],
-  showNames[2]["show_name"],
-];
+let showNamesArray = [...showNames];
 
-const chooseLocation = document.querySelectorAll(".location");
+const showDisplayName = [
+  showNamesArray[3]["show_name"],
+  showNamesArray[1]["show_name"],
+  showNamesArray[2]["show_name"],
+  showNamesArray[2]["show_name"],
+];
+let showDisplayNameArray = [...showDisplayName];
 
 let currentDay = new Date().getDay(); //### Get the current day (0 = Sunday, ..., 6 = Saturday)
+
+// Insert New Show Name
+const newShows = [
+  {
+    show_id: "bordello-Special",
+    show_name: "Bordello (Special)",
+    show_link: "#",
+    show_description: "A night Special of burlesque.",
+    showDates: ["02/06/2025", "02/13/2025"],
+  },
+  {
+    show_id: "OPUS-Special",
+    show_name: "OPUS (Special)",
+    show_link: "#",
+    show_description: "A night Special of burlesque.",
+    showDates: ["02/07/2025", "02/08/2025"],
+  },
+];
+showNamesArray = [...showNamesArray, ...newShows];
+
+console.log(showNamesArray);
+
+function insertNewShow(ID, dayIndexs) {
+  const currentDate = bookingDate; // Assuming bookingDate is defined somewhere
+
+  newShows.some((show) => {
+    if (ID === show.show_id && show.showDates.includes(currentDate)) {
+      console.log(`Current Show for ${currentDate}: ${show.show_name}`);
+
+      console.log(dayIndexs + " Get the day index");
+
+      console.log(showDisplayNameArray[dayIndexs] + " Get show index");
+
+      console.log(showDisplayNameArray[dayIndexs] + " Get show index");
+      console.log(show.show_name + " Show Get show index");
+
+      showDisplayNameArray[dayIndexs] = show.show_name;
+
+      console.log(showDisplayNameArray[dayIndexs] + " Updated Get show index");
+      return true; // Stop the loop
+    } else {
+      if (!show.showDates.includes(currentDate)) {
+        showDisplayNameArray = [...showDisplayName];
+      }
+      return false; // Continue the loop
+    }
+  });
+}
+
+// initialize the inseertNewShow function
+
+const chooseLocation = document.querySelectorAll(".location");
 
 let bookingDate = new Date();
 
@@ -241,8 +318,6 @@ function clearTimeSlot() {
 
 //### UPDATE DATEPICKER ACCORDING TO SHOW ID
 
-let showId = "";
-
 function setShowID(setNewShowID) {
   showId = setNewShowID;
   console.log(showId);
@@ -252,7 +327,7 @@ function setShowID(setNewShowID) {
 //END
 
 function show() {
-  showNames.forEach((show) => {
+  showNamesArray.forEach((show) => {
     console.log("Show Name: " + show.show_name);
     console.log("Show Link: " + show.show_link);
     console.log("Show Description: " + show.show_description); // Logs the show description
@@ -276,7 +351,7 @@ function show() {
       showId = this.getAttribute("data_id");
       //   showName.textContent = show.show_name;
       setShowID(showId);
-
+      insertNewShow(showId, showDays.indexOf(currentDay));
       document
         .querySelectorAll(".show-link")
         .forEach((link) => link.classList.remove("active"));
@@ -285,15 +360,17 @@ function show() {
       ReservationTables(currentDay);
     });
   });
-
-  console.log("Show IDDDDDDDDDDDDDDDDDDDDDDD");
 }
-
 show();
 
 //END
 
 function ReservationTables(currentDay) {
+  console.log(showId + "Show ID");
+
+  //### INSERT NEW SHOW
+  insertNewShow(showId, showDays.indexOf(currentDay));
+  //END
   console.log("Display by Default");
 
   console.log(bookingDate + "Current Date");
@@ -307,8 +384,8 @@ function ReservationTables(currentDay) {
   showName.textContent = "";
   showDays.forEach((displayname, index) => {
     if (displayname == currentDay) {
-      showName.textContent = showDisplayName[index];
-      displayShowName(showDisplayName[index]);
+      showName.textContent = showDisplayNameArray[index];
+      displayShowName(showDisplayNameArray[index]);
     }
   });
 
@@ -347,6 +424,11 @@ function ReservationTables(currentDay) {
   // Show Hours
   showHoursSpan.textContent = showHoursArray[showDays.indexOf(currentDay)];
 
+  // Show Feature Image
+  let featureImageUrl = showFeatureImageArray[showDays.indexOf(currentDay)];
+
+  featureImageDisplay(featureImageUrl);
+  // End
   //### TIME SLOT MANAGEMENT
   clearTimeSlot();
 
@@ -751,7 +833,7 @@ function createTable(data, tableGroup, color, currentDay) {
 
         //### ADD DATA TO ARRAY
         reservationData.push({
-          show_name: showDisplayName[showName],
+          show_name: showDisplayNameArray[showName],
           show_day: currentShowDay,
           table_id: table_id,
           table_number: data.table_number,
@@ -936,16 +1018,16 @@ $(function () {
         console.log(todayFormatted);
       }*/
 
-      console.log("bookingDate" + bookingDate);
+      // console.log("bookingDate" + bookingDate);
 
-      if (showId === "bordello") {
+      if (showId === "bordello" || showId === "bordello-Special") {
         // If the day is Thursday (getDay() === 4), return [true] to make it active
         if (date.getDay() === 4) {
           currentDay = 4;
           return [true]; // Enable Thursday
         }
         return [false]; // Disable other days
-      } else if (showId === "opus") {
+      } else if (showId === "opus" || showId === "OPUS-Special") {
         currentDay = 5;
         // If the day is Thursday (getDay() === 4), return [true] to make it active
         if (date.getDay() === 5 || date.getDay() === 6) {

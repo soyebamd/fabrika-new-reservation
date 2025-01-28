@@ -79,18 +79,18 @@
     <div class="container">
       <div class="row">
         <!-- Left Column -->
-        <div class="col">
+        <div class="col-md-4">
           <h1>Fabrika Reservation</h1>
           <h4 class="my-5">All Shows</h4>
           <div id="show"></div>
 
           <h4>Select Date:</h4>
           <div id="datepicker-container"></div>
-          <table id="result" border="1" class="d-none"></table>
+          <div id="featured-image"></div>
         </div>
 
         <!-- Right Column -->
-        <div class="col" id="show-info">
+        <div class="col-md-8" id="show-info">
           <form id="cart-form" method="POST">
             <h4 class="my-5">Show Details</h4>
             <p>
@@ -276,7 +276,7 @@
     </div>
 
     <div id="checkout"></div>
-
+    <table id="result" border="1" class="d-none"></table>
     <!-- Payment Form -->
     <form
       id="payment-form"
