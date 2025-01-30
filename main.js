@@ -1058,7 +1058,7 @@ $(function () {
       ###GET TODAY DATE IF NEED
 
       var today = new Date();
-      //var formattedDate = $.datepicker.formatDate("mm/dd/yy", date);
+ 
       var currentDayFormatted = $.datepicker.formatDate("mm/dd/yy", date);
 
       var todayFormatted = $.datepicker.formatDate("mm/dd/yy", today);
@@ -1068,6 +1068,17 @@ $(function () {
       }*/
 
       // console.log("bookingDate" + bookingDate);
+      var formattedDate = $.datepicker.formatDate("mm/dd/yy", date);
+
+      let specialShow = newShows.find((show) => show.show_id === showId);
+
+      if (specialShow) {
+        // Enable only the dates in showDates
+        if (specialShow.showDates.includes(formattedDate)) {
+          return [true];
+        }
+        return [false]; // Disable all other dates
+      }
 
       if (showId === "bordello" || showId === "bordello-Special") {
         // If the day is Thursday (getDay() === 4), return [true] to make it active
@@ -1076,7 +1087,7 @@ $(function () {
           return [true]; // Enable Thursday
         }
         return [false]; // Disable other days
-      } else if (showId === "opus" || showId === "OPUS-Special") {
+      } else if (showId === "opus" && showId === "OPUS-Special") {
         currentDay = 5;
         // If the day is Thursday (getDay() === 4), return [true] to make it active
         if (date.getDay() === 5 || date.getDay() === 6) {
