@@ -45,6 +45,8 @@
 
 import { FabrikaReservationTables } from "./src/reservationTables.js";
 
+import { BookedTable } from "./src/bookedTable.js";
+
 const result = document.querySelector("#result");
 
 // Base to trace days
@@ -105,6 +107,19 @@ let daysOfWeek = [
   "Friday",
   "Saturday",
 ];
+
+let timeIdSlot = [];
+
+// Create a Set of unique booked tables
+const BookedTableSet = new Set(
+  BookedTable.map(
+    (booked) =>
+      `${booked.table_id}__${booked.table_location}__${booked.table_booking_date}__${booked.time_Id}`
+  )
+);
+console.log(BookedTableSet);
+
+//console.log(BookedTableSet.table_location);
 
 let showEventShow = false;
 let showInfoDisplay = false;
@@ -223,33 +238,6 @@ showNamesArray = [...showNamesArray, ...newShows];
 
 console.log(showNamesArray);
 
-function insertNewShow(ID, dayIndexs) {
-  const currentDate = bookingDate; // Assuming bookingDate is defined somewhere
-
-  newShows.some((show) => {
-    if (ID === show.show_id && show.showDates.includes(currentDate)) {
-      console.log(`Current Show for ${currentDate}: ${show.show_name}`);
-
-      console.log(dayIndexs + " Get the day index");
-
-      console.log(showDisplayNameArray[dayIndexs] + " Get show index");
-
-      console.log(showDisplayNameArray[dayIndexs] + " Get show index");
-      console.log(show.show_name + " Show Get show index");
-
-      showDisplayNameArray[dayIndexs] = show.show_name;
-
-      console.log(showDisplayNameArray[dayIndexs] + " Updated Get show index");
-      return true; // Stop the loop
-    } else {
-      if (!show.showDates.includes(currentDate)) {
-        showDisplayNameArray = [...showDisplayName];
-      }
-      return false; // Continue the loop
-    }
-  });
-}
-
 // initialize the inseertNewShow function
 
 const chooseLocation = document.querySelectorAll(".location");
@@ -299,6 +287,33 @@ chooseLocation.forEach((location) => {
   });
 });
 //END
+
+function insertNewShow(ID, dayIndexs) {
+  const currentDate = bookingDate; // Assuming bookingDate is defined somewhere
+
+  newShows.some((show) => {
+    if (ID === show.show_id && show.showDates.includes(currentDate)) {
+      console.log(`Current Show for ${currentDate}: ${show.show_name}`);
+
+      console.log(dayIndexs + " Get the day index");
+
+      console.log(showDisplayNameArray[dayIndexs] + " Get show index");
+
+      console.log(showDisplayNameArray[dayIndexs] + " Get show index");
+      console.log(show.show_name + " Show Get show index");
+
+      showDisplayNameArray[dayIndexs] = show.show_name;
+
+      console.log(showDisplayNameArray[dayIndexs] + " Updated Get show index");
+      return true; // Stop the loop
+    } else {
+      if (!show.showDates.includes(currentDate)) {
+        showDisplayNameArray = [...showDisplayName];
+      }
+      return false; // Continue the loop
+    }
+  });
+}
 
 function displayShowName(count) {
   // Assuming you have a DOM element to display the show name
@@ -479,6 +494,8 @@ function ReservationTables(currentDay) {
         ""
       )}`;
 
+      timeIdSlot.push(convertedTime);
+
       //console.log(time_id + "dddddddddddddddddddddddddddddddddddd");
 
       // Initialize or check if the time slot is already selected for this location
@@ -570,6 +587,7 @@ function ReservationTables(currentDay) {
   total = 0; // Reset the total price to zero for now once the day changes and table will still be selected value if checked
   clearTables(); // Clear existing tables before creating new ones
 
+  /*
   result.innerHTML = `<thead><tr>
     <td>Table Number</td>
       <td> Minimum Seats</td>
@@ -578,7 +596,7 @@ function ReservationTables(currentDay) {
       <td> Description</td>
       <td> Image URL</td>
   </tr></thead>
- `;
+ `;*/
 
   mainFloorTables.forEach((tableData) => {
     //###IF DAY IS SUNDAY DAY VALUE 0
@@ -676,7 +694,7 @@ function ReservationTables(currentDay) {
 
     //### IF DAY IS MONDAY, TUESDAY, WEDNESDAY DAY VALUE 1, 2, 3
     //NON BOOKING DAYS
-
+    /*
     if (currentDay >= 1 && currentDay <= 3) {
       // console.log("non booking days");
       // Display the properties you need
@@ -693,6 +711,7 @@ function ReservationTables(currentDay) {
   </tr>
  `;
     }
+    */
     //END
 
     //### CREATE TABLES WITH OPTIONS ON FRONTEND MAIN.JS
@@ -717,7 +736,6 @@ function ReservationTables(currentDay) {
     }
   });
 }
-
 //### CREATE TABLES FUNCTION WITH CHOOSE SEAT NUMBER
 function createTable(data, tableGroup, color, currentDay) {
   // console.log("Current Day" + currentDay);
@@ -745,7 +763,39 @@ function createTable(data, tableGroup, color, currentDay) {
 
     const table_id = `seat_number_${data.table_number}_${i}`;
 
-    // console.log(selectedCheckboxes + "Checkeddd");
+    // add table_number to reervation array object if not have in reservationTables.js.
+    data.table_id = `seat_number_${data.table_number}_${i}`;
+
+    timeIdSlot.forEach((time) => {
+      //console.log(time);
+      data.time_Id = time;
+    });
+
+    // (data.time_Id = slotTimeID),
+    //  console.log(data);
+
+    //### Trace with booked data.
+
+    //const reservedTabled = `${data.show_name}-${data.table_booking_date}-${data.time_Id}-${data.table_id}`;
+    // console.log(`${data.location} Table Date to trace`);
+
+    const traceBookedTable = `${data.table_id}__${data.location}__${bookingDate}__${data.time_Id}`;
+
+    // console.log(traceBookedTable + "trace here booked data");
+
+    if (BookedTableSet.has(traceBookedTable)) {
+      // console.log(inputCheckbox);
+
+      inputCheckbox.style.border = "Solid 4px red";
+      inputCheckbox.checked = true;
+      inputCheckbox.setAttribute("disabled", true);
+    } else {
+      inputCheckbox.checked = false;
+    }
+
+    //  console.log("Is it is in reservatoin visit to conrol???");
+
+    // console.log(data);
 
     // Create label element
     const label = document.createElement("label");
