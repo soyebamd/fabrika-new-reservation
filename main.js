@@ -766,31 +766,33 @@ function createTable(data, tableGroup, color, currentDay) {
     // add table_number to reervation array object if not have in reservationTables.js.
     data.table_id = `seat_number_${data.table_number}_${i}`;
 
-    timeIdSlot.forEach((time) => {
-      //console.log(time);
-      data.time_Id = time;
+    const getTimeSlot = document.querySelectorAll(".show-times");
+
+    getTimeSlot.forEach((gettimeSlot) => {
+      gettimeSlot.addEventListener("change", function () {
+        data.time_Id = this.id;
+        console.log(this.id + "Data time id");
+        bookedTableData();
+      });
     });
+    function bookedTableData() {
+      const traceBookedTable = `${data.table_id}__${data.location}__${bookingDate}__${data.time_Id}`;
 
-    // (data.time_Id = slotTimeID),
-    //  console.log(data);
+      const inputCheckbox = document.querySelector(
+        `input[id="seat_number_${data.table_number}_${i}"]`
+      );
 
-    //### Trace with booked data.
+      if (BookedTableSet.has(traceBookedTable)) {
+        console.log(traceBookedTable + "trace booked table");
 
-    //const reservedTabled = `${data.show_name}-${data.table_booking_date}-${data.time_Id}-${data.table_id}`;
-    // console.log(`${data.location} Table Date to trace`);
-
-    const traceBookedTable = `${data.table_id}__${data.location}__${bookingDate}__${data.time_Id}`;
-
-    // console.log(traceBookedTable + "trace here booked data");
-
-    if (BookedTableSet.has(traceBookedTable)) {
-      // console.log(inputCheckbox);
-
-      inputCheckbox.style.border = "Solid 4px red";
-      inputCheckbox.checked = true;
-      inputCheckbox.setAttribute("disabled", true);
-    } else {
-      inputCheckbox.checked = false;
+        inputCheckbox.style.border = "Solid 4px red";
+        inputCheckbox.checked = true;
+        inputCheckbox.setAttribute("disabled", true);
+      } else {
+        inputCheckbox.style.border = "0";
+        inputCheckbox.checked = false;
+        inputCheckbox.removeAttribute("disabled");
+      }
     }
 
     //  console.log("Is it is in reservatoin visit to conrol???");
@@ -839,8 +841,6 @@ function createTable(data, tableGroup, color, currentDay) {
       //   checkedImg(this.id);
       // }
       //### GET SLOT TIME
-
-      const getTimeSlot = document.querySelectorAll(".show-times");
 
       let slotTime;
       let slotTimeID;
@@ -1005,7 +1005,6 @@ function resetData(bookingSelectedDate) {
   const selectedSeatReset = document.querySelectorAll(".form-check-input");
   selectedSeatReset.forEach((reset) => {
     reset.checked = false;
-    console.log("Can log here");
   });
 
   // Then, check boxes that match reservations for the selected date
