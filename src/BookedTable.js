@@ -47,6 +47,17 @@ export const BookedTable = [
   {
     show_name: "Opus (Variety Show)",
     show_day: "Saturday",
+    table_id: "seat_number_102_1",
+    table_number: 102,
+    table_price: 20,
+    table_location: "Main Floor",
+    table_booking_date: "03/29/2025",
+    time_slot: "7:30 PM",
+    time_Id: "time_1930",
+  },
+  {
+    show_name: "Opus (Variety Show)",
+    show_day: "Saturday",
     table_id: "seat_number_102_2",
     table_number: 102,
     table_price: 20,

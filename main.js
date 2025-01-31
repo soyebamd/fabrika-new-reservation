@@ -288,6 +288,20 @@ chooseLocation.forEach((location) => {
 });
 //END
 
+function triggerDatepickerUpdate(ID) {
+  let specialShow = newShows.find((show) => show.show_id === ID);
+
+  if (specialShow && specialShow.showDates.length > 0) {
+    let firstAvailableDate = specialShow.showDates[0];
+
+    console.log(`Jumping to first available date: ${firstAvailableDate}`);
+
+    // **Update the datepicker to the first valid date**
+    $("#datepicker").datepicker("setDate", firstAvailableDate);
+    $("#datepicker").datepicker("option", "defaultDate", firstAvailableDate);
+  }
+}
+
 function insertNewShow(ID, dayIndexs) {
   const currentDate = bookingDate; // Assuming bookingDate is defined somewhere
 
@@ -305,6 +319,8 @@ function insertNewShow(ID, dayIndexs) {
       showDisplayNameArray[dayIndexs] = show.show_name;
 
       console.log(showDisplayNameArray[dayIndexs] + " Updated Get show index");
+      //   $("#datepicker").datepicker("setDate", currentDate);
+
       return true; // Stop the loop
     } else {
       if (!show.showDates.includes(currentDate)) {
@@ -761,26 +777,49 @@ function createTable(data, tableGroup, color, currentDay) {
     inputCheckbox.setAttribute("type", "checkbox");
     inputCheckbox.setAttribute("id", `seat_number_${data.table_number}_${i}`);
 
+    timeSlotWrapper.appendChild(inputCheckbox);
+
+    // Assign the table ID
+
     const table_id = `seat_number_${data.table_number}_${i}`;
 
-    // add table_number to reervation array object if not have in reservationTables.js.
-    data.table_id = `seat_number_${data.table_number}_${i}`;
-
     const getTimeSlot = document.querySelectorAll(".show-times");
+    // console.log("Fix booked table for location");
 
+    // Function to update the selected time slot and call bookedTableData
+    function updateTimeSlot(timeSlot) {
+      data.time_Id = timeSlot.id;
+      console.log(timeSlot.id + " Data time id");
+      bookedTableData();
+    }
+
+    // Loop through each time slot
     getTimeSlot.forEach((gettimeSlot) => {
+      // ✅ If already checked by default, process it immediately
+      if (gettimeSlot.checked) {
+        console.log(gettimeSlot.id + " Time slot checked get id");
+        updateTimeSlot(gettimeSlot);
+      }
+
+      // ✅ Add event listener to detect user changes
       gettimeSlot.addEventListener("change", function () {
-        data.time_Id = this.id;
-        console.log(this.id + "Data time id");
-        bookedTableData();
+        //  ✅ Ensure that all checked time slots update correctly
+        getTimeSlot.forEach((slot) => {
+          if (slot.checked) {
+            updateTimeSlot(slot);
+          }
+        });
       });
     });
-    function bookedTableData() {
-      const traceBookedTable = `${data.table_id}__${data.location}__${bookingDate}__${data.time_Id}`;
 
-      const inputCheckbox = document.querySelector(
-        `input[id="seat_number_${data.table_number}_${i}"]`
-      );
+    function bookedTableData() {
+      const traceBookedTable = `${table_id}__${data.location}__${bookingDate}__${data.time_Id}`;
+
+      console.log("access table DIDddd" + table_id);
+
+      console.log("data location tarce" + data.location);
+
+      const inputCheckbox = document.getElementById(table_id);
 
       if (BookedTableSet.has(traceBookedTable)) {
         console.log(traceBookedTable + "trace booked table");
@@ -1111,6 +1150,19 @@ $(function () {
       }
 
       return [true];
+    },
+    beforeShow: function (input, inst) {
+      let specialShow = newShows.find((show) => show.show_id === showId);
+
+      if (specialShow && specialShow.showDates.length > 0) {
+        let firstAvailableDate = specialShow.showDates[0];
+
+        // Set the datepicker to the first available date
+        $(this).datepicker("setDate", firstAvailableDate);
+
+        // Optional: Move the datepicker to the first available date
+        $(this).datepicker("option", "defaultDate", firstAvailableDate);
+      }
     },
     onSelect: function (dateText, inst) {
       //  result.innerHTML = "";
