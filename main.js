@@ -52,6 +52,11 @@ const result = document.querySelector("#result");
 // Base to trace days
 const showDays = [0, 4, 5, 6];
 
+const GeneralAdmission__Tier_1 = [20, 20, 75, 75];
+const GeneralAdmission__Tier_2 = [20, 20, 50, 50];
+
+const GeneralAdmission__Tier_3 = [10, 10, 40, 40];
+
 //Min Spend
 const minSpend = [0, 0, 50, 100];
 let minSpendArray = [...minSpend];
@@ -167,17 +172,47 @@ let mainFloorTables = [];
 const selectedCheckboxes = {}; // Store selected checkboxes (table_number => [seat_numbers])
 const selectedTime = {};
 const timeSlotWrapper = document.querySelector("#time-slot");
+
 const seatingTime = {
-  weekTimeSlot: ["6:00", "18:15", "18:30"],
+  sundayTimeSlot: ["12:00", "12:15", "12:30", "12:45", "13:00", "13:15"],
 
-  saturdayTimeSlot: ["8:00", "18:15", "18:30", "19:00", "19:15", "19:30"],
+  thursdayTimeSlot: [
+    "18:00",
+    "18:15",
+    "18:30",
+    "18:45",
+    "19:00",
+    "19:15",
+    "19:30",
+  ],
 
-  sundayTimeSlot: ["7:00", "12:15", "12:30", "12:45", "13:00"],
+  fridayTimeSlot: [
+    "18:00",
+    "18:15",
+    "18:30",
+    "19:00",
+    "19:15",
+    "19:30",
+    "19:45",
+    "20:00",
+    "20:15",
+  ],
+
+  saturdayTimeSlot: [
+    "18:00",
+    "18:15",
+    "18:30",
+    "19:00",
+    "19:15",
+    "19:30",
+    "19:45",
+  ],
 };
 
 let showId = "";
 
-const { weekTimeSlot, saturdayTimeSlot, sundayTimeSlot } = seatingTime;
+const { sundayTimeSlot, thursdayTimeSlot, fridayTimeSlot, saturdayTimeSlot } =
+  seatingTime;
 const showNames = [
   {
     show_id: "all",
@@ -478,10 +513,13 @@ function ReservationTables(currentDay) {
   function timeSlotManagment(timeslot) {
     if (timeslot === 0) {
       timeslot = sundayTimeSlot;
+    } else if (timeslot === 4) {
+      timeslot = thursdayTimeSlot;
+    } else if (timeslot === 5) {
+      timeslot = fridayTimeSlot;
     } else if (timeslot === 6) {
       timeslot = saturdayTimeSlot;
     } else {
-      timeslot = weekTimeSlot;
     }
 
     timeslot.forEach((time, index) => {
@@ -614,98 +652,36 @@ function ReservationTables(currentDay) {
   </tr></thead>
  `;*/
 
+  /*🧑‍💻
+  ⚡- Update table price according to day 
+  ⚡- Get tableData from mainfloorTable loop == reservation table loop
+  */
+
   mainFloorTables.forEach((tableData) => {
     //###IF DAY IS SUNDAY DAY VALUE 0
-    if (currentDay == showDays[0]) {
-      if (tableData.table_number == "A" || tableData.table_number == "B") {
-        tableData.price = 75;
-      } else if (
-        tableData.table_number >= 500 &&
-        tableData.table_number <= 501
-      ) {
-        tableData.price = 300;
-      } else if (
-        tableData.table_number >= 502 &&
-        tableData.table_number <= 504
-      ) {
-        tableData.price = 200;
-      } else if (
-        tableData.table_number >= 505 &&
-        tableData.table_number <= 506
-      ) {
-        tableData.price = 300;
-      } else if (
-        tableData.table_number >= 315 &&
-        tableData.table_number <= 317
-      ) {
-        tableData.price = 200;
-      } else {
-        tableData.price = 20;
-      }
 
-      // console.log(
-      //   tableData.price +
-      //     " Table Price with table number " +
-      //     tableData.table_number
-      // );
+    //If current day is 0 == Sunday
+
+    //🧑‍💻⚡ Change Tier number according to sheet
+    if (
+      (currentDay == 5 || currentDay == 6) && // Check if it's Friday or Saturday
+      tableData.table_number >= 100 &&
+      tableData.table_number <= 104 // Check if table number is between 100 and 104
+    ) {
+      tableData.tier = 2;
     }
-    //END
 
-    //### IF DAY IS THURSDAY DAY VALUE 4
-    else if (currentDay == showDays[1]) {
-      if (tableData.table_number >= 500 && tableData.table_number <= 506) {
-        tableData.price = 100;
-      } else if (
-        tableData.table_number >= 315 &&
-        tableData.table_number <= 340
-      ) {
-        tableData.price = 40;
-      } else {
-        tableData.price = 20;
-      }
-
-      // console.log(tableData); // This will log each table data, including the updated ones
+    //🧑‍💻⚡ Get automnatically price according to Tier
+    if (tableData.tier == 1) {
+      tableData.price = GeneralAdmission__Tier_1[showDays.indexOf(currentDay)];
     }
-    //END
 
-    //### IF DAY IS FRIDAY & SATURDAY DAY VALUE 5 & 6
-    else if (currentDay == showDays[2] || currentDay == showDays[3]) {
-      if (tableData.table_number >= 500 && tableData.table_number <= 503) {
-        tableData.price = 750;
-      } else if (
-        tableData.table_number >= 504 &&
-        tableData.table_number <= 506
-      ) {
-        tableData.price = 300;
-      } else if (
-        tableData.table_number >= 207 &&
-        tableData.table_number <= 209
-      ) {
-        tableData.price = 50;
-      } else if (
-        tableData.table_number >= 230 &&
-        tableData.table_number <= 314
-      ) {
-        tableData.price = 50;
-      } else if (
-        tableData.table_number >= 315 &&
-        tableData.table_number <= 317
-      ) {
-        tableData.price = 650;
-      } else if (
-        (tableData.table_number >= 400 && tableData.table_number <= 403) ||
-        (tableData.table_number >= 600 && tableData.table_number <= 603)
-      ) {
-        tableData.price = 40;
-      } else if (
-        tableData.table_number == "A" ||
-        tableData.table_number == "B"
-      ) {
-        tableData.price = 100;
-      }
-
-      // console.log(tableData); // This will log each table data, including the updated ones
+    if (tableData.tier == 2) {
+      tableData.price = GeneralAdmission__Tier_2[showDays.indexOf(currentDay)];
     }
+
+    //console.log(tableData);
+
     //END
 
     //### IF DAY IS MONDAY, TUESDAY, WEDNESDAY DAY VALUE 1, 2, 3
@@ -730,8 +706,8 @@ function ReservationTables(currentDay) {
     */
     //END
 
-    //### CREATE TABLES WITH OPTIONS ON FRONTEND MAIN.JS
-    //### GROUP 1 TABLE  WITH A AND B TABLE NUMBER, ID row-AB
+    //🧑‍💻⚡ CREATE TABLES WITH OPTIONS ON FRONTEND MAIN.JS
+    //🧑‍💻⚡ GROUP 1 TABLE  WITH A AND B TABLE NUMBER, ID row-AB
     if (tableData.table_number == "A" || tableData.table_number == "B") {
       createTable(tableData, group1_tables, "#7d0101", currentDay);
     }
@@ -814,10 +790,6 @@ function createTable(data, tableGroup, color, currentDay) {
 
     function bookedTableData() {
       const traceBookedTable = `${table_id}__${data.location}__${bookingDate}__${data.time_Id}`;
-
-      console.log("access table DIDddd" + table_id);
-
-      console.log("data location tarce" + data.location);
 
       const inputCheckbox = document.getElementById(table_id);
 
