@@ -52,10 +52,15 @@ const result = document.querySelector("#result");
 // Base to trace days
 const showDays = [0, 4, 5, 6];
 
-const GeneralAdmission__Tier_1 = [20, 20, 75, 75];
-const GeneralAdmission__Tier_2 = [20, 20, 50, 50];
+const GeneralAdmission__Tier_1 = [20, 20, 50, 50];
+let GeneralAdmission__Tier_1_array = [...GeneralAdmission__Tier_1];
+
+const GeneralAdmission__Tier_2 = [20, 20, 75, 75];
+let GeneralAdmission__Tier_2_array = [...GeneralAdmission__Tier_2];
 
 const GeneralAdmission__Tier_3 = [10, 10, 40, 40];
+
+let SpecialShowPrice = [...GeneralAdmission__Tier_1];
 
 //Min Spend
 const minSpend = [0, 0, 50, 100];
@@ -173,7 +178,7 @@ const selectedCheckboxes = {}; // Store selected checkboxes (table_number => [se
 const selectedTime = {};
 const timeSlotWrapper = document.querySelector("#time-slot");
 
-const seatingTime = {
+let seatingTime = {
   sundayTimeSlot: ["12:00", "12:15", "12:30", "12:45", "13:00", "13:15"],
 
   thursdayTimeSlot: [
@@ -207,12 +212,20 @@ const seatingTime = {
     "19:30",
     "19:45",
   ],
+  timeSlot: function () {
+    return [
+      this.sundayTimeSlot,
+      this.thursdayTimeSlot,
+      this.fridayTimeSlot,
+      this.saturdayTimeSlot,
+    ];
+  },
 };
+
+let seatingTimeArray = Object.values(seatingTime);
 
 let showId = "";
 
-const { sundayTimeSlot, thursdayTimeSlot, fridayTimeSlot, saturdayTimeSlot } =
-  seatingTime;
 const showNames = [
   {
     show_id: "all",
@@ -239,6 +252,12 @@ const showNames = [
     show_description: "Brunch with fabulous drag performances.",
   },
 ];
+let { timeSlot } = seatingTime;
+
+const slots = timeSlot.call(seatingTime);
+let slotsArray = [...slots];
+
+console.log(slotsArray + "Slot array");
 
 let showNamesArray = [...showNames];
 
@@ -255,18 +274,15 @@ let currentDay = new Date().getDay(); //### Get the current day (0 = Sunday, ...
 // Insert New Show Name
 const newShows = [
   {
-    show_id: "bordello-Special",
-    show_name: "Bordello (Special)",
+    show_id: "wicked-cabaret",
+    show_name: "A Wicked Cabaret Ticket February 8 Ticket",
     show_link: "#",
     show_description: "A night Special of burlesque.",
-    showDates: ["02/06/2025", "02/13/2025"],
-  },
-  {
-    show_id: "OPUS-Special",
-    show_name: "OPUS (Special)",
-    show_link: "#",
-    show_description: "A night Special of burlesque.",
-    showDates: ["02/07/2025", "02/08/2025"],
+    showDates: ["02/01/2025", "02/08/2025", "02/15/2025"],
+    ShowStartAt: "10:30 PM",
+    ShowHours: "10:00 PM",
+    MinSpend: "0",
+    seatingTime: ["22:00", "22:15", "22:30", "22:45", "23:00"],
   },
 ];
 showNamesArray = [...showNamesArray, ...newShows];
@@ -436,6 +452,31 @@ function ReservationTables(currentDay) {
 
   //### INSERT NEW SHOW
   insertNewShow(showId, showDays.indexOf(currentDay));
+
+  newShows.forEach((newShow) => {
+    console.log(bookingDate + "Booking date for show");
+    if (newShow.showDates.includes(bookingDate) && showId == "wicked-cabaret") {
+      //adjust min Spend
+      minSpendArray[showDays.indexOf(currentDay)] = newShow.MinSpend;
+      //show start time
+      showStartingTimeArray[showDays.indexOf(currentDay)] = newShow.ShowStartAt;
+
+      showHoursArray[showDays.indexOf(currentDay)] = newShow.ShowHours;
+      slotsArray[showDays.indexOf(currentDay)] = newShow.seatingTime;
+      //update price
+      GeneralAdmission__Tier_1_array[showDays.indexOf(currentDay)] = 40;
+      // GeneralAdmission__Tier_2_array[showDays.indexOf(currentDay)] = 40;
+    } else {
+      //reset all values
+      minSpendArray = [...minSpend];
+      showStartingTimeArray = [...showStartingTime];
+      showHoursArray = [...showHours];
+      slotsArray = [...slots];
+      GeneralAdmission__Tier_1_array = [...GeneralAdmission__Tier_1];
+      GeneralAdmission__Tier_2_array = [...GeneralAdmission__Tier_2];
+    }
+  });
+
   //END
   console.log("Display by Default");
 
@@ -494,6 +535,9 @@ function ReservationTables(currentDay) {
   let featureImageUrl = showFeatureImageArray[showDays.indexOf(currentDay)];
 
   featureImageDisplay(featureImageUrl);
+
+  // If special show overwirte exiting
+
   // End
   //### TIME SLOT MANAGEMENT
   clearTimeSlot();
@@ -512,15 +556,17 @@ function ReservationTables(currentDay) {
 
   function timeSlotManagment(timeslot) {
     if (timeslot === 0) {
-      timeslot = sundayTimeSlot;
+      timeslot = slotsArray[0];
     } else if (timeslot === 4) {
-      timeslot = thursdayTimeSlot;
+      timeslot = slotsArray[1];
     } else if (timeslot === 5) {
-      timeslot = fridayTimeSlot;
+      timeslot = slotsArray[2];
     } else if (timeslot === 6) {
-      timeslot = saturdayTimeSlot;
+      timeslot = slotsArray[3];
     } else {
     }
+
+    console.log;
 
     timeslot.forEach((time, index) => {
       //  console.log(time, index);
@@ -663,21 +709,48 @@ function ReservationTables(currentDay) {
     //If current day is 0 == Sunday
 
     //🧑‍💻⚡ Change Tier number according to sheet
+
+    //Default add tier Price
+    tableData.tier = 1;
+
+    let tier_color = "#ff0000";
+
+    // 🧑‍💻⚡MainFloor tables
+
+    //Table 100 to 104
+    if ((currentDay == 0 || currentDay == 4) && tableData.tier == 1) {
+      tier_color = "#cb82e6";
+    }
+
     if (
       (currentDay == 5 || currentDay == 6) && // Check if it's Friday or Saturday
       tableData.table_number >= 100 &&
       tableData.table_number <= 104 // Check if table number is between 100 and 104
     ) {
       tableData.tier = 2;
+      tier_color = "#cb82e6";
     }
 
-    //🧑‍💻⚡ Get automnatically price according to Tier
+    // 🧑‍💻⚡if Mezzanine table 305 to 315
+    // Table 305 to 315
+    if (
+      (currentDay == 5 || currentDay == 6) && // Check if it's Friday or Saturday
+      tableData.table_number >= 305 &&
+      tableData.table_number <= 315 // Check if table number is between 100 and 104
+    ) {
+      tableData.tier = 1;
+      tier_color = "#ff0000";
+    }
+
+    //🧑‍💻⚡ Get automnatically price according to Tier Adjust price
     if (tableData.tier == 1) {
-      tableData.price = GeneralAdmission__Tier_1[showDays.indexOf(currentDay)];
+      tableData.price =
+        GeneralAdmission__Tier_1_array[showDays.indexOf(currentDay)];
     }
 
     if (tableData.tier == 2) {
-      tableData.price = GeneralAdmission__Tier_2[showDays.indexOf(currentDay)];
+      tableData.price =
+        GeneralAdmission__Tier_2_array[showDays.indexOf(currentDay)];
     }
 
     //console.log(tableData);
@@ -709,22 +782,22 @@ function ReservationTables(currentDay) {
     //🧑‍💻⚡ CREATE TABLES WITH OPTIONS ON FRONTEND MAIN.JS
     //🧑‍💻⚡ GROUP 1 TABLE  WITH A AND B TABLE NUMBER, ID row-AB
     if (tableData.table_number == "A" || tableData.table_number == "B") {
-      createTable(tableData, group1_tables, "#7d0101", currentDay);
+      createTable(tableData, group1_tables, tier_color, currentDay);
     }
 
     //### GROUP 2 TABLE  WITH 105 TO 109 TABLE NUMBER, ID row-109-105
     if (tableData.table_number >= 105 && tableData.table_number <= 109) {
-      createTable(tableData, group2_tables, "#7d0101", currentDay);
+      createTable(tableData, group2_tables, tier_color, currentDay);
     }
 
     //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
     if (tableData.table_number >= 100 && tableData.table_number <= 104) {
-      createTable(tableData, group3_tables, "#6d006d", currentDay);
+      createTable(tableData, group3_tables, tier_color, currentDay);
     }
 
     //### GROUP 4 TABLE  WITH 305 TO 315 TABLE NUMBER, ID row-305-315
     if (tableData.table_number >= 305 && tableData.table_number <= 315) {
-      createTable(tableData, mezzanine_group1_tables, "#6d006d", currentDay);
+      createTable(tableData, mezzanine_group1_tables, tier_color, currentDay);
     }
   });
 }
@@ -1091,14 +1164,14 @@ $(function () {
         return [false]; // Disable all other dates
       }
 
-      if (showId === "bordello" || showId === "bordello-Special") {
+      if (showId === "bordello") {
         // If the day is Thursday (getDay() === 4), return [true] to make it active
         if (date.getDay() === 4) {
           currentDay = 4;
           return [true]; // Enable Thursday
         }
         return [false]; // Disable other days
-      } else if (showId === "opus" && showId === "OPUS-Special") {
+      } else if (showId === "opus" && showId === "wicked-cabaret") {
         currentDay = 5;
         // If the day is Thursday (getDay() === 4), return [true] to make it active
         if (date.getDay() === 5 || date.getDay() === 6) {

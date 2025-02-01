@@ -8,7 +8,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: "B",
@@ -19,7 +18,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 1,
@@ -30,7 +28,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 2,
@@ -41,7 +38,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 3,
@@ -52,7 +48,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 4,
@@ -63,7 +58,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 5,
@@ -74,7 +68,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 6,
@@ -85,7 +78,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 7,
@@ -96,7 +88,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 8,
@@ -107,7 +98,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 9,
@@ -118,7 +108,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 10,
@@ -129,7 +118,6 @@ export const FabrikaReservationTables = [
     desc: "",
     image: "",
     location: "Main Floor",
-    tier: 1,
   },
   {
     id: 11,
