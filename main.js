@@ -284,6 +284,31 @@ const newShows = [
     MinSpend: "0",
     seatingTime: ["22:00", "22:15", "22:30", "22:45", "23:00"],
   },
+
+  {
+    show_id: "love-inferno-ticket",
+    show_name: "Love, Inferno Show 1",
+    show_link: "#",
+    show_description:
+      "The Season of Love is right aound the corner! What better way to spend it than under the lights at Fabrika for our special performance: Love, Inferno",
+    showDates: ["02/14/2025"],
+    ShowStartAt: "06:30 PM",
+    ShowHours: "Doors Open: 5:30 pm - 8:00 pm",
+    MinSpend: "0",
+    seatingTime: ["17:30", "17:45", "18:00", "18:15", "18:30"],
+  },
+  {
+    show_id: "love-inferno-ticket-2",
+    show_name: "Love, Inferno Show 2",
+    show_link: "#",
+    show_description:
+      "The Season of Love is right aound the corner! What better way to spend it than under the lights at Fabrika for our special performance: Love, Inferno",
+    showDates: ["02/14/2025"],
+    ShowStartAt: "09:30 PM",
+    ShowHours: "Doors Open: 8:30 pm - close",
+    MinSpend: "0",
+    seatingTime: ["17:30", "17:45", "18:00", "18:15", "18:30"],
+  },
 ];
 showNamesArray = [...showNamesArray, ...newShows];
 
@@ -331,6 +356,7 @@ chooseLocation.forEach((location) => {
       );
       //### TRIGGER THE RESERVATION TABLES FUNCTION
       ReservationTables(currentDay);
+
       console.log(reservationData);
 
       //END
@@ -454,20 +480,31 @@ function ReservationTables(currentDay) {
   insertNewShow(showId, showDays.indexOf(currentDay));
 
   newShows.forEach((newShow) => {
-    console.log(bookingDate + "Booking date for show");
-    if (newShow.showDates.includes(bookingDate) && showId == "wicked-cabaret") {
-      //adjust min Spend
-      minSpendArray[showDays.indexOf(currentDay)] = newShow.MinSpend;
-      //show start time
-      showStartingTimeArray[showDays.indexOf(currentDay)] = newShow.ShowStartAt;
+    console.log(`${bookingDate} Booking date for show`);
 
-      showHoursArray[showDays.indexOf(currentDay)] = newShow.ShowHours;
-      slotsArray[showDays.indexOf(currentDay)] = newShow.seatingTime;
-      //update price
+    //🧑‍💻⚡Default things update for special shows
+
+    if (newShow.showDates.includes(bookingDate) && showId === newShow.show_id) {
+      const index = showDays.indexOf(currentDay);
+      minSpendArray[index] = newShow.MinSpend;
+      showStartingTimeArray[index] = newShow.ShowStartAt;
+      showHoursArray[index] = newShow.ShowHours;
+      slotsArray[index] = newShow.seatingTime;
+    }
+
+    //🧑‍💻⚡Seating price update for wicked-cabaret
+    if (["wicked-cabaret"].includes(showId)) {
       GeneralAdmission__Tier_1_array[showDays.indexOf(currentDay)] = 40;
-      // GeneralAdmission__Tier_2_array[showDays.indexOf(currentDay)] = 40;
-    } else {
-      //reset all values
+    }
+
+    //🧑‍💻⚡Seating price update for love-inferno-ticket, love-inferno-ticket-2
+    if (["love-inferno-ticket", "love-inferno-ticket-2"].includes(showId)) {
+      GeneralAdmission__Tier_1_array[showDays.indexOf(currentDay)] = 85;
+      GeneralAdmission__Tier_2_array[showDays.indexOf(currentDay)] = 130;
+    }
+
+    //🧑‍💻⚡Reset to remaining shows
+    if (["all", "bordello", "opusShow", "drag_brunch"].includes(showId)) {
       minSpendArray = [...minSpend];
       showStartingTimeArray = [...showStartingTime];
       showHoursArray = [...showHours];
@@ -1171,7 +1208,7 @@ $(function () {
           return [true]; // Enable Thursday
         }
         return [false]; // Disable other days
-      } else if (showId === "opus" && showId === "wicked-cabaret") {
+      } else if (showId === "opus" || showId === "wicked-cabaret") {
         currentDay = 5;
         // If the day is Thursday (getDay() === 4), return [true] to make it active
         if (date.getDay() === 5 || date.getDay() === 6) {
