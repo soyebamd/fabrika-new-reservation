@@ -36,7 +36,9 @@
         position: absolute;
         right: 0;
         top: 0;
-        border: solid 2px;
+        background: #5f0202;
+
+        box-shadow: 0 0 2px #fff;
         padding: 15px;
       }
 
@@ -73,26 +75,37 @@
       #customer-information {
         max-width: 500px;
       }
+      #featured-image img {
+        width: 420px;
+        height: 420px;
+        object-fit: cover;
+      }
     </style>
-    <script type="module" crossorigin src="/assets/index-Cd-z8ygI.js"></script>
+    <script type="module" crossorigin src="/assets/index-Dq5pqOo-.js"></script>
   </head>
   <body>
-    <div class="container">
+    <div class="container mt-4">
       <div class="row">
+        <div class="col-md-4">
+          <div id="featured-image"></div>
+        </div>
         <!-- Left Column -->
-        <div class="col">
-          <h1>Fabrika Reservation</h1>
-          <h4 class="my-5">All Shows</h4>
-          <div id="show"></div>
+        <div class="col-md-4">
+          <div
+            class="d-flex justify-content-start flex-column align-items-center"
+          >
+            <h4 class="mb-2 text-left h5">All Shows</h4>
+            <div id="show"></div>
 
-          <h4>Select Date:</h4>
-          <div id="datepicker-container"></div>
+            <h4 class="h5">Select A Show Date:</h4>
+            <div id="datepicker-container"></div>
+          </div>
         </div>
 
         <!-- Right Column -->
-        <div class="col" id="show-info">
+        <div class="col-md-4" id="show-info">
           <form id="cart-form" method="POST">
-            <h4 class="my-5">Show Details</h4>
+            <h4 class="mb-2 h5">Show Details</h4>
             <p>
               <strong>Show Name:</strong>
               <span id="show-name-span">Opus (Variety Show)</span>
@@ -105,7 +118,7 @@
             <p><strong>Minimum Spend:</strong> <span id="min-spend"></span></p>
             <p><strong>Show Hours:</strong> <span id="show-hours"></span></p>
 
-            <h4 class="my-5">Select Show time:</h4>
+            <h4 class="mb-2 h5">Select Show time:</h4>
             <div id="time-slot"></div>
           </form>
         </div>
@@ -114,7 +127,7 @@
       <!-- Seating Selection Section -->
       <div class="container">
         <div id="events">
-          <h4 class="my-5">Select Event:</h4>
+          <h4 class="mb-2 h5">Select Event:</h4>
           <div class="mb-3">
             <input
               type="radio"
@@ -145,7 +158,7 @@
                 <!-- Row 104-100 -->
                 <div class="row w-100 flex-row-reverse" id="row-104-100"></div>
               </div>
-              <div class="col"></div>
+              <!-- <div class="col"></div> -->
             </div>
           </div>
 
@@ -276,7 +289,7 @@
     </div>
 
     <div id="checkout"></div>
-
+    <table id="result" border="1" class="d-none"></table>
     <!-- Payment Form -->
     <form
       id="payment-form"
@@ -284,9 +297,9 @@
       method="POST"
       class="hidden"
     ></form>
-    <table id="result" border="1" class="d-none"></table>
+
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
   </body>
 </html>

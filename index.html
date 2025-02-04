@@ -80,6 +80,40 @@
         height: 420px;
         object-fit: cover;
       }
+
+      .card {
+        width: 50px;
+        height: 50px;
+        border-radius: 0;
+      }
+      /* .border-right {
+        border-right: 1px solid #ffffff45;
+      } */
+
+      .in-one-row {
+        display: flex; /* Keep the columns in a row */
+        flex-wrap: nowrap; /* Prevent wrapping */
+        /* overflow-x: auto; */
+      }
+
+      .in-one-row-scroll {
+        display: flex; /* Keep the columns in a row */
+        flex-wrap: nowrap; /* Prevent wrapping */
+        overflow-x: auto;
+        justify-content: start; /* Center the content horizontally */
+
+        padding-bottom: 50px;
+      }
+
+      .justify-start {
+        justify-content: start;
+      }
+      .stage {
+        background: rgb(185 140 85);
+        border-radius: 100%;
+        width: 200px;
+        height: 200px;
+      }
     </style>
   </head>
   <body>
@@ -148,22 +182,58 @@
 
           <!-- Main Floor Layout -->
           <div class="container-fluid">
-            <div class="row">
-              <div class="col d-flex w-100 gap-4">
-                <!-- Row AB -->
-                <div class="row w-100 flex-row-reverse" id="row-AB"></div>
-                <!-- Row 109-105 -->
-                <div class="row w-100 flex-row-reverse" id="row-109-105"></div>
-                <!-- Row 104-100 -->
-                <div class="row w-100 flex-row-reverse" id="row-104-100"></div>
+            <div class="row in-one-row-scroll">
+              <div class="">
+                <div class="d-flex gap-4">
+                  <!-- Row AB -->
+                  <div
+                    class="flex-row-reverse border-right in-one-row table-slot"
+                    id="row-AB"
+                  ></div>
+                  <!-- Row 109-105 -->
+                  <div
+                    class="flex-row-reverse border-right in-one-row table-slot"
+                    id="row-109-105"
+                  ></div>
+                  <!-- Row 104-100 -->
+                  <div
+                    class="flex-row-reverse in-one-row table-slot"
+                    id="row-104-100"
+                  ></div>
+                </div>
+
+                <div class="d-flex gap-4">
+                  <!-- Row 110 - 115 -->
+                  <div
+                    class="flex-row-reverse border-right in-one-row table-slot"
+                    id="row-110-115"
+                  ></div>
+                </div>
               </div>
-              <!-- <div class="col"></div> -->
+
+              <div
+                class="col in-one-row flex-row-reverse justify-start"
+                id="stage"
+              >
+                <div class="stage"></div>
+              </div>
+
+              <!-- Row 200-204 -->
+              <div class="col in-one-row table-slot" id="row-200-204"></div>
+
+              <!-- Row 205-209 -->
+              <div class="col in-one-row table-slot" id="row-205-209"></div>
             </div>
           </div>
 
           <!-- Mezzanine Floor Layout -->
           <div class="container-fluid">
-            <div class="row w-100 flex-row-reverse" id="row-305-315"></div>
+            <div class="row">
+              <div
+                class="col in-one-row flex-row-reverse justify-start table-slot"
+                id="row-305-315"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
