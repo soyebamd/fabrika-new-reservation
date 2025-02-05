@@ -207,6 +207,7 @@ export const FabrikaReservationTables = [
     price: 20,
     desc: "",
     image: "",
+    location: "Main Floor",
   },
   {
     id: 20,

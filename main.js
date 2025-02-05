@@ -58,10 +58,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const GeneralAdmission__Tier_1 = [20, 20, 50, 50];
   let GeneralAdmission__Tier_1_array = [...GeneralAdmission__Tier_1];
 
-  const GeneralAdmission__Tier_2 = [20, 20, 75, 75];
+  const GeneralAdmission__Tier_2 = [, , 75, 75];
   let GeneralAdmission__Tier_2_array = [...GeneralAdmission__Tier_2];
 
   const GeneralAdmission__Tier_3 = [10, 10, 40, 40];
+
+  const perCouch__Fees__Tier_1 = [300, , 750, 750];
+
+  const perCouch__Fees__Tier_2 = [200, , 750, 750];
+
+  const perCouch__Fees__Tier_3 = [200, , 300, 300];
+
+  const perCouch__Fees__Tier_4 = [300, , 300, 300];
+
+  const perCouch__Fees__Tier_5 = [200, , 650, 650];
 
   let SpecialShowPrice = [...GeneralAdmission__Tier_1];
 
@@ -168,6 +178,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Main Floor
 
+  const mainFloorContainer = document.querySelector("#main-floor");
+  const mainMezzanineContainer = document.querySelector("#mezzanine-floor");
+
   const tableSlot = document.querySelectorAll(".table-slot");
 
   const group1_tables = document.querySelector("#row-AB");
@@ -181,6 +194,37 @@ document.addEventListener("DOMContentLoaded", function () {
   const group5_tables = document.querySelector("#row-205-209");
 
   const group6_tables = document.querySelector("#row-110-115");
+
+  const group7_tables = document.querySelector("#row-116-119");
+
+  const group8_tables = document.querySelector("#row-120-125");
+
+  const group9_tables = document.querySelector("#row-126-129");
+
+  const group10_tables = document.querySelector("#row-130-131");
+
+  const group11_tables = document.querySelector("#row-132-133");
+
+  const group12_tables = document.querySelector("#row-210-212");
+
+  const group13_tables = document.querySelector("#row-220-222");
+
+  const group14_tables = document.querySelector("#row-230");
+
+  const group15_tables = document.querySelector("#row-504-506");
+
+  const group16_tables = document.querySelector("#row-500-501");
+
+  const group17_tables = document.querySelector("#row-502-503");
+
+  const group18_tables = document.querySelector("#row-317");
+
+  const group19_tables = document.querySelector("#row-601-603");
+  const group20_tables = document.querySelector("#row-316-317");
+
+  const group22_tables = document.querySelector("#row-400-403");
+
+  const group21_tables = document.querySelector("#row-300-304");
 
   //Mezzanine Floor
   const mezzanine_group1_tables = document.querySelector("#row-305-315");
@@ -382,6 +426,17 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(reservationData);
 
         //END
+      }
+
+      console.log(location.value + "location");
+
+      if (location.value == "Mezzanine Floor") {
+        mainFloorContainer.style.display = "none";
+        mainMezzanineContainer.style.display = "block";
+      }
+      if (location.value == "Main Floor") {
+        mainFloorContainer.style.display = "block";
+        mainMezzanineContainer.style.display = "none";
       }
     });
   });
@@ -795,6 +850,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const isWeekend = currentDay === 5 || currentDay === 6; // Check if it's Friday or Saturday
 
+      const isThursdayBolero = currentDay === 4;
+
+      const isCouchDay =
+        currentDay === 5 || currentDay === 6 || currentDay === 0;
+
       if (isWeekend) {
         // 🧑‍💻⚡Main Floor tables
         if (
@@ -815,8 +875,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      // 🧑‍💻⚡ Automatically adjust price according to Tier
+      if (isThursdayBolero) {
+        if (tableData.table_number >= 207 && tableData.table_number <= 209) {
+          tableData.tier = 2;
+          tier_color = "#cb82e6";
+        }
+      }
+
+      if (isCouchDay) {
+        if (tableData.table_number >= 315 && tableData.table_number <= 317) {
+          tableData.tier = 3;
+          tier_color = "#cb82e6";
+        }
+      }
       if (tableData.tier === 1) {
+        // 🧑‍💻⚡ Automatically adjust price according to Tier
         tableData.price =
           GeneralAdmission__Tier_1_array[showDays.indexOf(currentDay)];
       }
@@ -824,6 +897,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (tableData.tier === 2) {
         tableData.price =
           GeneralAdmission__Tier_2_array[showDays.indexOf(currentDay)];
+      }
+
+      if (tableData.tier === 3) {
+        tableData.price = perCouch__Fees__Tier_5[showDays.indexOf(currentDay)];
       }
 
       //console.log(tableData);
@@ -882,6 +959,87 @@ document.addEventListener("DOMContentLoaded", function () {
       if (tableData.table_number >= 110 && tableData.table_number <= 115) {
         createTable(tableData, group6_tables, tier_color, currentDay);
       }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 116 && tableData.table_number <= 119) {
+        createTable(tableData, group7_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 120 && tableData.table_number <= 125) {
+        createTable(tableData, group8_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 126 && tableData.table_number <= 129) {
+        createTable(tableData, group9_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 130 && tableData.table_number <= 131) {
+        createTable(tableData, group10_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 132 && tableData.table_number <= 133) {
+        createTable(tableData, group11_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 210 && tableData.table_number <= 212) {
+        createTable(tableData, group12_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 220 && tableData.table_number <= 222) {
+        createTable(tableData, group13_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number == 230) {
+        createTable(tableData, group14_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 504 && tableData.table_number <= 506) {
+        createTable(tableData, group15_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 500 && tableData.table_number <= 501) {
+        createTable(tableData, group16_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 502 && tableData.table_number <= 503) {
+        createTable(tableData, group17_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number == 317) {
+        createTable(tableData, group18_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 601 && tableData.table_number <= 603) {
+        createTable(tableData, group19_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 316 && tableData.table_number <= 317) {
+        createTable(tableData, group20_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 300 && tableData.table_number <= 304) {
+        createTable(tableData, group21_tables, tier_color, currentDay);
+      }
+
+      //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
+      if (tableData.table_number >= 400 && tableData.table_number <= 403) {
+        createTable(tableData, group22_tables, tier_color, currentDay);
+      }
+
       //### GROUP 4 TABLE  WITH 305 TO 315 TABLE NUMBER, ID row-305-315
       if (tableData.table_number >= 305 && tableData.table_number <= 315) {
         createTable(tableData, mezzanine_group1_tables, tier_color, currentDay);
@@ -890,243 +1048,247 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   //### CREATE TABLES FUNCTION WITH CHOOSE SEAT NUMBER
   function createTable(data, tableGroup, color, currentDay) {
-    // console.log("Current Day" + currentDay);
-    if (currentDay >= 1 && currentDay <= 3) {
-      // console.log("Non-booking day: No tables created");
-      return; // Exit the function if it's an off day
-    }
+    if (data.price) {
+      // console.log("Current Day" + currentDay);
+      if (currentDay >= 1 && currentDay <= 3) {
+        // console.log("Non-booking day: No tables created");
+        return; // Exit the function if it's an off day
+      }
 
-    const createCol = document.createElement("div");
+      const createCol = document.createElement("div");
 
-    createCol.classList.add("col-hold");
-    // createCol.style.backgroundColor = color;
-    createCol.innerHTML = `<div class="input-container"><div class="card text-white fw-bold text-center" style="background-color:${color}">$${data.price}
+      createCol.classList.add("table-reserve");
+      // createCol.style.backgroundColor = color;
+      createCol.innerHTML = `<div class="input-container"><div class="card text-white fw-bold text-center" style="background-color:${color}">$${data.price}
   <small style="font-size:10px;">${data.table_number}</small></div>
   </div>`;
 
-    tableGroup.appendChild(createCol);
+      tableGroup.appendChild(createCol);
 
-    const maxSeat = data.max_seat_requirment;
+      const maxSeat = data.max_seat_requirment;
 
-    for (let i = 1; i <= maxSeat; i++) {
-      const inputCheckbox = document.createElement("input");
-      inputCheckbox.setAttribute("type", "checkbox");
-      inputCheckbox.setAttribute("id", `seat_number_${data.table_number}_${i}`);
+      for (let i = 1; i <= maxSeat; i++) {
+        const inputCheckbox = document.createElement("input");
+        inputCheckbox.setAttribute("type", "checkbox");
+        inputCheckbox.setAttribute(
+          "id",
+          `seat_number_${data.table_number}_${i}`
+        );
 
-      timeSlotWrapper.appendChild(inputCheckbox);
+        timeSlotWrapper.appendChild(inputCheckbox);
 
-      // Assign the table ID
+        // Assign the table ID
 
-      const table_id = `seat_number_${data.table_number}_${i}`;
+        const table_id = `seat_number_${data.table_number}_${i}`;
 
-      const getTimeSlot = document.querySelectorAll(".show-times");
-      // console.log("Fix booked table for location");
+        const getTimeSlot = document.querySelectorAll(".show-times");
+        // console.log("Fix booked table for location");
 
-      // Function to update the selected time slot and call bookedTableData
-      function updateTimeSlot(timeSlot) {
-        data.time_Id = timeSlot.id;
-        console.log(timeSlot.id + " Data time id");
-        bookedTableData();
-        scrollContentCenter();
-      }
-
-      // Loop through each time slot
-      getTimeSlot.forEach((gettimeSlot) => {
-        // ✅ If already checked by default, process it immediately
-        if (gettimeSlot.checked) {
-          console.log(gettimeSlot.id + " Time slot checked get id");
-          updateTimeSlot(gettimeSlot);
+        // Function to update the selected time slot and call bookedTableData
+        function updateTimeSlot(timeSlot) {
+          data.time_Id = timeSlot.id;
+          console.log(timeSlot.id + " Data time id");
+          bookedTableData();
+          scrollContentCenter();
         }
 
-        // ✅ Add event listener to detect user changes
-        gettimeSlot.addEventListener("change", function () {
-          //  ✅ Ensure that all checked time slots update correctly
+        // Loop through each time slot
+        getTimeSlot.forEach((gettimeSlot) => {
+          // ✅ If already checked by default, process it immediately
+          if (gettimeSlot.checked) {
+            console.log(gettimeSlot.id + " Time slot checked get id");
+            updateTimeSlot(gettimeSlot);
+          }
+
+          // ✅ Add event listener to detect user changes
+          gettimeSlot.addEventListener("change", function () {
+            //  ✅ Ensure that all checked time slots update correctly
+            getTimeSlot.forEach((slot) => {
+              if (slot.checked) {
+                updateTimeSlot(slot);
+              }
+            });
+          });
+        });
+
+        function bookedTableData() {
+          const traceBookedTable = `${table_id}__${data.location}__${bookingDate}__${data.time_Id}`;
+
+          const inputCheckbox = document.getElementById(table_id);
+
+          if (BookedTableSet.has(traceBookedTable)) {
+            console.log(traceBookedTable + "trace booked table");
+
+            inputCheckbox.style.border = "Solid 4px red";
+            inputCheckbox.checked = true;
+            inputCheckbox.setAttribute("disabled", true);
+          } else {
+            inputCheckbox.style.border = "0";
+            inputCheckbox.checked = false;
+            inputCheckbox.removeAttribute("disabled");
+          }
+        }
+
+        //  console.log("Is it is in reservatoin visit to conrol???");
+
+        // console.log(data);
+
+        // Create label element
+        const label = document.createElement("label");
+        label.setAttribute("for", table_id); // Associate with checkbox using the same id
+        //  label.textContent = `Seat ${i}`; // Add text content for the label
+
+        // Create table image and insert in label
+
+        // const tableImg = document.createElement("img");
+
+        // tableImg.src = "/assets/Bar_Chairs_Back_Final_1x.webp";
+        // tableImg.className = "table";
+
+        // label.appendChild(tableImg);
+
+        // function checkedImg(id) {
+        //   const labelId = document.querySelector(`label[for="${id}"]`);
+
+        //   const changeCheckedImg = labelId.querySelectorAll("img");
+
+        //   changeCheckedImg[0].setAttribute(
+        //     "src",
+        //     "/assets/Bar_Chairs_Back_Final.webp"
+        //   );
+        // }
+
+        if (
+          selectedCheckboxes[table_id] &&
+          selectedCheckboxes[table_id].includes(i)
+        ) {
+          inputCheckbox.checked = true;
+        }
+
+        inputCheckbox.setAttribute("name", "selected_table");
+        inputCheckbox.setAttribute("class", "form-check-input");
+
+        inputCheckbox.addEventListener("change", function () {
+          // change checked seat image
+
+          // if (this.checked) {
+          //   checkedImg(this.id);
+          // }
+          //### GET SLOT TIME
+
+          let slotTime;
+          let slotTimeID;
+
           getTimeSlot.forEach((slot) => {
             if (slot.checked) {
-              updateTimeSlot(slot);
+              console.log("slot are checked");
+
+              slotTime = slot.value;
+              slotTimeID = slot.id;
             }
           });
-        });
-      });
-
-      function bookedTableData() {
-        const traceBookedTable = `${table_id}__${data.location}__${bookingDate}__${data.time_Id}`;
-
-        const inputCheckbox = document.getElementById(table_id);
-
-        if (BookedTableSet.has(traceBookedTable)) {
-          console.log(traceBookedTable + "trace booked table");
-
-          inputCheckbox.style.border = "Solid 4px red";
-          inputCheckbox.checked = true;
-          inputCheckbox.setAttribute("disabled", true);
-        } else {
-          inputCheckbox.style.border = "0";
-          inputCheckbox.checked = false;
-          inputCheckbox.removeAttribute("disabled");
-        }
-      }
-
-      //  console.log("Is it is in reservatoin visit to conrol???");
-
-      // console.log(data);
-
-      // Create label element
-      const label = document.createElement("label");
-      label.setAttribute("for", table_id); // Associate with checkbox using the same id
-      //  label.textContent = `Seat ${i}`; // Add text content for the label
-
-      // Create table image and insert in label
-
-      // const tableImg = document.createElement("img");
-
-      // tableImg.src = "/assets/Bar_Chairs_Back_Final_1x.webp";
-      // tableImg.className = "table";
-
-      // label.appendChild(tableImg);
-
-      // function checkedImg(id) {
-      //   const labelId = document.querySelector(`label[for="${id}"]`);
-
-      //   const changeCheckedImg = labelId.querySelectorAll("img");
-
-      //   changeCheckedImg[0].setAttribute(
-      //     "src",
-      //     "/assets/Bar_Chairs_Back_Final.webp"
-      //   );
-      // }
-
-      if (
-        selectedCheckboxes[table_id] &&
-        selectedCheckboxes[table_id].includes(i)
-      ) {
-        inputCheckbox.checked = true;
-      }
-
-      inputCheckbox.setAttribute("name", "selected_table");
-      inputCheckbox.setAttribute("class", "form-check-input");
-
-      inputCheckbox.addEventListener("change", function () {
-        // change checked seat image
-
-        // if (this.checked) {
-        //   checkedImg(this.id);
-        // }
-        //### GET SLOT TIME
-
-        let slotTime;
-        let slotTimeID;
-
-        getTimeSlot.forEach((slot) => {
-          if (slot.checked) {
-            console.log("slot are checked");
-
-            slotTime = slot.value;
-            slotTimeID = slot.id;
-          }
-        });
-        //END
-        //### IF CHECKED REMAIN CHECKED OPTION
-
-        if (this.checked) {
-          console.log("checkbox checked");
-
-          if (!selectedCheckboxes[table_id]) {
-            selectedCheckboxes[table_id] = [];
-          }
-
-          selectedCheckboxes[table_id].push(i);
-
           //END
+          //### IF CHECKED REMAIN CHECKED OPTION
 
-          total += data.price; // Add the table price when checked
+          if (this.checked) {
+            console.log("checkbox checked");
 
-          console.log(currentDay + "current selected date");
-
-          let showName;
-
-          let currentShowDay;
-
-          if (showDays.includes(currentDay)) {
-            showName = showDays.indexOf(currentDay);
-            currentShowDay = daysOfWeek[currentDay];
-            console.log(showName + "current Day");
-          }
-
-          //### ADD DATA TO ARRAY
-          reservationData.push({
-            show_name: showDisplayNameArray[showName],
-            show_day: currentShowDay,
-            table_id: table_id,
-            table_number: data.table_number,
-            table_price: data.price,
-            table_location: data.location,
-            table_booking_date: bookingDate,
-            time_slot: slotTime,
-            time_Id: slotTimeID,
-          });
-
-          updateTableDisplay(this);
-
-          //END
-        } else {
-          const index = selectedCheckboxes[table_id].indexOf(i);
-          if (index > -1) {
-            selectedCheckboxes[table_id].splice(index, 1);
-            total -= data.price;
-          }
-          total -= data.price; // Subtract the table price when unchecked
-          //
-
-          //### FIND TABLE NUMBER (INDEX) OF THE ELEMENT AND REMOVE IT.
-          const removeBookingIndex = reservationData.findIndex(
-            (reservation) =>
-              reservation.table_id === table_id &&
-              reservation.table_booking_date === bookingDate
-          );
-
-          if (removeBookingIndex !== -1) {
-            reservationData.splice(removeBookingIndex, 1);
-            console.log("Removed Reservation:", reservationData);
-
-            updateTableDisplay();
-            customerInformation.style.display =
-              removeBookingIndex == 0 ? "none" : "block";
-          }
-        }
-
-        function updateTableDisplay(isTimeSelected) {
-          checkout.innerHTML = "";
-
-          // Create a map to track unique table_id + time_slot combinations
-          const uniqueReservations = new Map();
-
-          // Process reservations to keep only the latest entry for duplicate table_id + time_slot
-          reservationData.forEach((data, index) => {
-            if (data.time_slot === undefined) {
-              alert("Please select time slot first");
-              isTimeSelected.checked = false;
-              reservationData.splice(index, 1);
-              return;
+            if (!selectedCheckboxes[table_id]) {
+              selectedCheckboxes[table_id] = [];
             }
 
-            const key = `${data.table_id}_${data.time_slot}`;
-            uniqueReservations.set(key, { data, index });
-          });
+            selectedCheckboxes[table_id].push(i);
 
-          // Clear existing reservationData array
-          reservationData.length = 0;
+            //END
 
-          // Rebuild reservationData and display with unique entries
-          uniqueReservations.forEach(({ data, index }) => {
-            // Add back to reservationData
-            reservationData.push(data);
+            total += data.price; // Add the table price when checked
 
-            // Show/hide customer information
-            customerInformation.style.display = "block";
+            console.log(currentDay + "current selected date");
 
-            // Add reservation to display
-            checkout.innerHTML += `
+            let showName;
+
+            let currentShowDay;
+
+            if (showDays.includes(currentDay)) {
+              showName = showDays.indexOf(currentDay);
+              currentShowDay = daysOfWeek[currentDay];
+              console.log(showName + "current Day");
+            }
+
+            //### ADD DATA TO ARRAY
+            reservationData.push({
+              show_name: showDisplayNameArray[showName],
+              show_day: currentShowDay,
+              table_id: table_id,
+              table_number: data.table_number,
+              table_price: data.price,
+              table_location: data.location,
+              table_booking_date: bookingDate,
+              time_slot: slotTime,
+              time_Id: slotTimeID,
+            });
+
+            updateTableDisplay(this);
+
+            //END
+          } else {
+            const index = selectedCheckboxes[table_id].indexOf(i);
+            if (index > -1) {
+              selectedCheckboxes[table_id].splice(index, 1);
+              total -= data.price;
+            }
+            total -= data.price; // Subtract the table price when unchecked
+            //
+
+            //### FIND TABLE NUMBER (INDEX) OF THE ELEMENT AND REMOVE IT.
+            const removeBookingIndex = reservationData.findIndex(
+              (reservation) =>
+                reservation.table_id === table_id &&
+                reservation.table_booking_date === bookingDate
+            );
+
+            if (removeBookingIndex !== -1) {
+              reservationData.splice(removeBookingIndex, 1);
+              console.log("Removed Reservation:", reservationData);
+
+              updateTableDisplay();
+              customerInformation.style.display =
+                removeBookingIndex == 0 ? "none" : "block";
+            }
+          }
+
+          function updateTableDisplay(isTimeSelected) {
+            checkout.innerHTML = "";
+
+            // Create a map to track unique table_id + time_slot combinations
+            const uniqueReservations = new Map();
+
+            // Process reservations to keep only the latest entry for duplicate table_id + time_slot
+            reservationData.forEach((data, index) => {
+              if (data.time_slot === undefined) {
+                alert("Please select time slot first");
+                isTimeSelected.checked = false;
+                reservationData.splice(index, 1);
+                return;
+              }
+
+              const key = `${data.table_id}_${data.time_slot}`;
+              uniqueReservations.set(key, { data, index });
+            });
+
+            // Clear existing reservationData array
+            reservationData.length = 0;
+
+            // Rebuild reservationData and display with unique entries
+            uniqueReservations.forEach(({ data, index }) => {
+              // Add back to reservationData
+              reservationData.push(data);
+
+              // Show/hide customer information
+              customerInformation.style.display = "block";
+
+              // Add reservation to display
+              checkout.innerHTML += `
       <div class="reservation-item">
         <p>#${index + 1}</p>
         <p><strong>Show Name</strong>: ${data.show_name}</p>
@@ -1138,34 +1300,35 @@ document.addEventListener("DOMContentLoaded", function () {
         <p><strong>Table</strong>: ${data.table_id}</p>
       </div>
     `;
+            });
+          }
+        });
+
+        // inputCheckbox.appendChild(document.createTextNode(i));
+        const inputWrapper = tableGroup.querySelectorAll(".input-container");
+
+        inputWrapper.forEach((input) => {
+          input.appendChild(inputCheckbox);
+          input.appendChild(label);
+        });
+
+        if (i % 2 === 0) {
+          inputWrapper.forEach((input) => {
+            input.parentNode.insertBefore(inputCheckbox, input);
+            input.parentNode.insertBefore(label, input);
+          });
+        } else {
+          inputWrapper.forEach((input) => {
+            input.parentNode.insertBefore(inputCheckbox, input.nextSibling);
+            input.parentNode.insertBefore(label, input.nextSibling);
           });
         }
-      });
 
-      // inputCheckbox.appendChild(document.createTextNode(i));
-      const inputWrapper = tableGroup.querySelectorAll(".input-container");
-
-      inputWrapper.forEach((input) => {
-        input.appendChild(inputCheckbox);
-        input.appendChild(label);
-      });
-
-      if (i % 2 === 0) {
-        inputWrapper.forEach((input) => {
-          input.parentNode.insertBefore(inputCheckbox, input);
-          input.parentNode.insertBefore(label, input);
-        });
-      } else {
-        inputWrapper.forEach((input) => {
-          input.parentNode.insertBefore(inputCheckbox, input.nextSibling);
-          input.parentNode.insertBefore(label, input.nextSibling);
-        });
+        // if (i % 2 === 0) {
+        //   console.log(i + " Even");
+        //   inputCheckbox.style.border = "1px solid #7d0101";
+        // }
       }
-
-      // if (i % 2 === 0) {
-      //   console.log(i + " Even");
-      //   inputCheckbox.style.border = "1px solid #7d0101";
-      // }
     }
   }
   //END
