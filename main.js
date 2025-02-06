@@ -61,6 +61,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const GeneralAdmission__Tier_2 = [, , 75, 75];
   let GeneralAdmission__Tier_2_array = [...GeneralAdmission__Tier_2];
 
+  const Vip__Tier_1 = [400, 50, 750, 750];
+  let Vip__Tier_1_array = [...Vip__Tier_1];
+
+  const Vip__Tier_2 = [200, 50, 300, 300];
+  let Vip__Tier_2_array = [...Vip__Tier_2];
+
   const GeneralAdmission__Tier_3 = [10, 10, 40, 40];
 
   const perCouch__Fees__Tier_1 = [300, , 750, 750];
@@ -180,6 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const mainFloorContainer = document.querySelector("#main-floor");
   const mainMezzanineContainer = document.querySelector("#mezzanine-floor");
+  mainMezzanineContainer.style.display = "none";
 
   const tableSlot = document.querySelectorAll(".table-slot");
 
@@ -220,14 +227,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const group18_tables = document.querySelector("#row-317");
 
   const group19_tables = document.querySelector("#row-601-603");
-  const group20_tables = document.querySelector("#row-316-317");
+  const group20_tables = document.querySelector("#row-315-316");
 
   const group22_tables = document.querySelector("#row-400-403");
 
-  const group21_tables = document.querySelector("#row-300-304");
+  const group21_tables = document.querySelector("#row-300-303");
 
   //Mezzanine Floor
-  const mezzanine_group1_tables = document.querySelector("#row-305-315");
+  const mezzanine_group1_tables = document.querySelector("#row-304-314");
 
   //checkout div
   const checkout = document.querySelector("#checkout");
@@ -841,12 +848,7 @@ document.addEventListener("DOMContentLoaded", function () {
       //Default add tier Price
       tableData.tier = 1;
 
-      let tier_color = "#ff0000";
-
-      //Table 100 to 104
-      if ((currentDay == 0 || currentDay == 4) && tableData.tier == 1) {
-        tier_color = "#cb82e6";
-      }
+      let tier_color = "#cb82e6";
 
       const isWeekend = currentDay === 5 || currentDay === 6; // Check if it's Friday or Saturday
 
@@ -856,10 +858,17 @@ document.addEventListener("DOMContentLoaded", function () {
         currentDay === 5 || currentDay === 6 || currentDay === 0;
 
       if (isWeekend) {
+        console.log(tableData.table_number);
+
+        tier_color = "#ff0000";
         // 🧑‍💻⚡Main Floor tables
         if (
           (tableData.table_number >= 100 && tableData.table_number <= 104) ||
-          (tableData.table_number >= 200 && tableData.table_number <= 204)
+          (tableData.table_number >= 110 && tableData.table_number <= 115) ||
+          (tableData.table_number >= 120 && tableData.table_number <= 125) ||
+          (tableData.table_number >= 200 && tableData.table_number <= 204) ||
+          (tableData.table_number >= 210 && tableData.table_number <= 212) ||
+          (tableData.table_number >= 220 && tableData.table_number <= 222)
         ) {
           tableData.tier = 2;
           tier_color = "#cb82e6";
@@ -875,6 +884,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
+      //Table 100 to 104
+      if ((currentDay == 0 || currentDay == 4) && tableData.tier == 1) {
+        tier_color = "#cb82e6";
+      }
+
       if (isThursdayBolero) {
         if (tableData.table_number >= 207 && tableData.table_number <= 209) {
           tableData.tier = 2;
@@ -888,6 +902,16 @@ document.addEventListener("DOMContentLoaded", function () {
           tier_color = "#cb82e6";
         }
       }
+
+      // TABLE 500 TO 506 AND FOR VIP GENERAL ADDMISSION
+      if (tableData.table_number >= 500 && tableData.table_number <= 503) {
+        tableData.tier = 4;
+      }
+
+      if (tableData.table_number >= 504 && tableData.table_number <= 506) {
+        tableData.tier = 5;
+      }
+
       if (tableData.tier === 1) {
         // 🧑‍💻⚡ Automatically adjust price according to Tier
         tableData.price =
@@ -901,6 +925,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (tableData.tier === 3) {
         tableData.price = perCouch__Fees__Tier_5[showDays.indexOf(currentDay)];
+      }
+
+      // TABLE 500 TO 506 AND FOR VIP GENERAL ADDMISSION
+
+      if (tableData.tier === 4) {
+        tableData.price = Vip__Tier_1[showDays.indexOf(currentDay)];
+        tier_color = "#57c06b";
+      }
+
+      if (tableData.tier === 5) {
+        tableData.price = Vip__Tier_2[showDays.indexOf(currentDay)];
+        tier_color = "#5271ff";
       }
 
       //console.log(tableData);
@@ -1026,12 +1062,12 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
-      if (tableData.table_number >= 316 && tableData.table_number <= 317) {
+      if (tableData.table_number >= 315 && tableData.table_number <= 316) {
         createTable(tableData, group20_tables, tier_color, currentDay);
       }
 
       //### GROUP 3 TABLE  WITH 100 TO 104 TABLE NUMBER, ID row-104-100
-      if (tableData.table_number >= 300 && tableData.table_number <= 304) {
+      if (tableData.table_number >= 300 && tableData.table_number <= 303) {
         createTable(tableData, group21_tables, tier_color, currentDay);
       }
 
@@ -1040,8 +1076,8 @@ document.addEventListener("DOMContentLoaded", function () {
         createTable(tableData, group22_tables, tier_color, currentDay);
       }
 
-      //### GROUP 4 TABLE  WITH 305 TO 315 TABLE NUMBER, ID row-305-315
-      if (tableData.table_number >= 305 && tableData.table_number <= 315) {
+      //### GROUP 4 TABLE  WITH 305 TO 315 TABLE NUMBER, ID row-304-314
+      if (tableData.table_number >= 304 && tableData.table_number <= 314) {
         createTable(tableData, mezzanine_group1_tables, tier_color, currentDay);
       }
     });
