@@ -55,31 +55,31 @@ document.addEventListener("DOMContentLoaded", function () {
   // Base to trace days
   const showDays = [0, 4, 5, 6];
 
-  const GeneralAdmission__Tier_1 = [20, 20, 50, 50];
-  let GeneralAdmission__Tier_1_array = [...GeneralAdmission__Tier_1];
+  const mainFloor_default_price = [20, 10, 50, 50];
+  let mainFloor_default_price_array = [...mainFloor_default_price];
 
-  const GeneralAdmission__Tier_2 = [, , 75, 75];
-  let GeneralAdmission__Tier_2_array = [...GeneralAdmission__Tier_2];
+  const mainfloor_Opus_price = [20, 10, 75, 75];
 
-  const Vip__Tier_1 = [400, 50, 750, 750];
-  let Vip__Tier_1_array = [...Vip__Tier_1];
+  const mainFloor_couch_default_price = [200, 50, 300, 300];
+  let mainFloor_couch_default_price_array = [...mainFloor_couch_default_price];
 
-  const Vip__Tier_2 = [200, 50, 300, 300];
-  let Vip__Tier_2_array = [...Vip__Tier_2];
+  const mainFloor_vip_couch_default_price = [400, 50, 750, 750];
+  let mainFloor_vip_couch_default_price_array = [
+    ...mainFloor_vip_couch_default_price,
+  ];
 
-  const GeneralAdmission__Tier_3 = [10, 10, 40, 40];
+  //  Mezzanine table prices per persone and couch
 
-  const perCouch__Fees__Tier_1 = [300, , 750, 750];
+  const mezzanine_default_price = [20, 10, 50, 50];
+  const mezzanine_default_price_array = [...mezzanine_default_price];
 
-  const perCouch__Fees__Tier_2 = [200, , 750, 750];
+  const mezzanine_couch_price = [300, 50, 650, 650];
+  const mezzanine_couch_price_array = [...mezzanine_couch_price];
 
-  const perCouch__Fees__Tier_3 = [200, , 300, 300];
+  const mezzanine_special_default_price = [20, 20, 45, 45];
+  const mezzanine_special_couch_price = [300, 50, 650, 650];
 
-  const perCouch__Fees__Tier_4 = [300, , 300, 300];
-
-  const perCouch__Fees__Tier_5 = [200, , 650, 650];
-
-  let SpecialShowPrice = [...GeneralAdmission__Tier_1];
+  // END Mezzanine table prices per persone and couch
 
   //Min Spend
   const minSpend = [0, 0, 50, 100];
@@ -589,12 +589,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       //🧑‍💻⚡Seating price update for wicked-cabaret
       if (["wicked-cabaret"].includes(showId)) {
-        GeneralAdmission__Tier_1_array[showDays.indexOf(currentDay)] = 40;
+        mainFloor_default_price_array[showDays.indexOf(currentDay)] = 40;
       }
 
       //🧑‍💻⚡Seating price update for love-inferno-ticket, love-inferno-ticket-2
       if (["love-inferno-ticket", "love-inferno-ticket-2"].includes(showId)) {
-        GeneralAdmission__Tier_1_array[showDays.indexOf(currentDay)] = 85;
+        mainFloor_default_price_array[showDays.indexOf(currentDay)] = 85;
         GeneralAdmission__Tier_2_array[showDays.indexOf(currentDay)] = 130;
       }
 
@@ -604,7 +604,7 @@ document.addEventListener("DOMContentLoaded", function () {
         showStartingTimeArray = [...showStartingTime];
         showHoursArray = [...showHours];
         slotsArray = [...slots];
-        GeneralAdmission__Tier_1_array = [...GeneralAdmission__Tier_1];
+        mainFloor_default_price_array = [...mainFloor_default_price];
         GeneralAdmission__Tier_2_array = [...GeneralAdmission__Tier_2];
       }
     });
@@ -850,18 +850,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
       let tier_color = "#cb82e6";
 
-      const isWeekend = currentDay === 5 || currentDay === 6; // Check if it's Friday or Saturday
+      const isWeekendOpus = currentDay === 5 || currentDay === 6; // Check if it's Friday or Saturday
 
-      const isThursdayBolero = currentDay === 4;
+      const isThursdayBordello = currentDay === 4; // Thursday Bordello Show
 
-      const isCouchDay =
-        currentDay === 5 || currentDay === 6 || currentDay === 0;
+      const isSundayDragBrunch = currentDay === 0; // Sunday DragBrunch
 
-      if (isWeekend) {
+      // default price set
+      tableData.price =
+        mainFloor_default_price_array[showDays.indexOf(currentDay)];
+
+      if (isWeekendOpus) {
         console.log(tableData.table_number);
 
         tier_color = "#ff0000";
         // 🧑‍💻⚡Main Floor tables
+
         if (
           (tableData.table_number >= 100 && tableData.table_number <= 104) ||
           (tableData.table_number >= 110 && tableData.table_number <= 115) ||
@@ -870,73 +874,55 @@ document.addEventListener("DOMContentLoaded", function () {
           (tableData.table_number >= 210 && tableData.table_number <= 212) ||
           (tableData.table_number >= 220 && tableData.table_number <= 222)
         ) {
-          tableData.tier = 2;
           tier_color = "#cb82e6";
+          tableData.price = mainfloor_Opus_price[showDays.indexOf(currentDay)];
         }
-
-        // 🧑‍💻⚡ Mezzanine Floor Tables
-        else if (
-          tableData.table_number >= 305 &&
-          tableData.table_number <= 315
-        ) {
-          tableData.tier = 1;
-          tier_color = "#ff0000";
-        }
-      }
-
-      //Table 100 to 104
-      if ((currentDay == 0 || currentDay == 4) && tableData.tier == 1) {
-        tier_color = "#cb82e6";
-      }
-
-      if (isThursdayBolero) {
-        if (tableData.table_number >= 207 && tableData.table_number <= 209) {
-          tableData.tier = 2;
-          tier_color = "#cb82e6";
-        }
-      }
-
-      if (isCouchDay) {
-        if (tableData.table_number >= 315 && tableData.table_number <= 317) {
-          tableData.tier = 3;
-          tier_color = "#cb82e6";
-        }
-      }
-
-      // TABLE 500 TO 506 AND FOR VIP GENERAL ADDMISSION
-      if (tableData.table_number >= 500 && tableData.table_number <= 503) {
-        tableData.tier = 4;
       }
 
       if (tableData.table_number >= 504 && tableData.table_number <= 506) {
-        tableData.tier = 5;
-      }
-
-      if (tableData.tier === 1) {
-        // 🧑‍💻⚡ Automatically adjust price according to Tier
-        tableData.price =
-          GeneralAdmission__Tier_1_array[showDays.indexOf(currentDay)];
-      }
-
-      if (tableData.tier === 2) {
-        tableData.price =
-          GeneralAdmission__Tier_2_array[showDays.indexOf(currentDay)];
-      }
-
-      if (tableData.tier === 3) {
-        tableData.price = perCouch__Fees__Tier_5[showDays.indexOf(currentDay)];
-      }
-
-      // TABLE 500 TO 506 AND FOR VIP GENERAL ADDMISSION
-
-      if (tableData.tier === 4) {
-        tableData.price = Vip__Tier_1[showDays.indexOf(currentDay)];
-        tier_color = "#57c06b";
-      }
-
-      if (tableData.tier === 5) {
-        tableData.price = Vip__Tier_2[showDays.indexOf(currentDay)];
         tier_color = "#5271ff";
+
+        tableData.price =
+          mainFloor_couch_default_price_array[showDays.indexOf(currentDay)];
+      }
+
+      if (tableData.table_number >= 500 && tableData.table_number <= 503) {
+        tier_color = "#57c06b";
+
+        tableData.price =
+          mainFloor_vip_couch_default_price_array[showDays.indexOf(currentDay)];
+      }
+
+      //  Mezzanine Table Prices
+
+      if (
+        (tableData.table_number >= 304 && tableData.table_number <= 314) ||
+        (tableData.table_number >= 315 && tableData.table_number <= 317) ||
+        (tableData.table_number >= 601 && tableData.table_number <= 603) ||
+        (tableData.table_number >= 300 && tableData.table_number <= 303) ||
+        (tableData.table_number >= 400 && tableData.table_number <= 403)
+      ) {
+        tableData.price =
+          mezzanine_default_price_array[showDays.indexOf(currentDay)];
+      }
+      if (tableData.table_number >= 315 && tableData.table_number <= 317) {
+        tableData.price =
+          mezzanine_couch_price_array[showDays.indexOf(currentDay)];
+        tier_color = "#57c06b";
+        if (isWeekendOpus) {
+          tier_color = "#ffde59";
+        }
+      }
+
+      if (isWeekendOpus) {
+        if (
+          (tableData.table_number >= 601 && tableData.table_number <= 603) ||
+          (tableData.table_number >= 400 && tableData.table_number <= 403)
+        ) {
+          tableData.price =
+            mezzanine_special_default_price[showDays.indexOf(currentDay)];
+          tier_color = "#eda140";
+        }
       }
 
       //console.log(tableData);
@@ -964,10 +950,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     */
       //END
-
-      //🧑‍💻⚡ CREATE TABLES WITH OPTIONS ON FRONTEND MAIN.JS
-      //🧑‍💻⚡ GROUP 1 TABLE  WITH A AND B TABLE NUMBER, ID row-AB
       if (tableData.table_number == "A" || tableData.table_number == "B") {
+        //🧑‍💻⚡ CREATE TABLES WITH OPTIONS ON FRONTEND MAIN.JS
+        //🧑‍💻⚡ GROUP 1 TABLE  WITH A AND B TABLE NUMBER, ID row-AB
         createTable(tableData, group1_tables, tier_color, currentDay);
       }
 
@@ -1095,7 +1080,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       createCol.classList.add("table-reserve");
       // createCol.style.backgroundColor = color;
-      createCol.innerHTML = `<div class="input-container"><div class="card text-white fw-bold text-center" style="background-color:${color}">$${data.price}
+      createCol.innerHTML = `<div class="input-container"><div class="card text-dark fw-bold text-center" style="background-color:${color}">$${data.price}
   <small style="font-size:10px;">${data.table_number}</small></div>
   </div>`;
 
