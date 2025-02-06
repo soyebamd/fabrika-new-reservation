@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let mainFloor_default_price_array = [...mainFloor_default_price];
 
   const mainfloor_Opus_price = [20, 10, 75, 75];
+  let mainfloor_Opus_price_array = [...mainfloor_Opus_price];
 
   const mainFloor_couch_default_price = [200, 50, 300, 300];
   let mainFloor_couch_default_price_array = [...mainFloor_couch_default_price];
@@ -595,7 +596,7 @@ document.addEventListener("DOMContentLoaded", function () {
       //🧑‍💻⚡Seating price update for love-inferno-ticket, love-inferno-ticket-2
       if (["love-inferno-ticket", "love-inferno-ticket-2"].includes(showId)) {
         mainFloor_default_price_array[showDays.indexOf(currentDay)] = 85;
-        GeneralAdmission__Tier_2_array[showDays.indexOf(currentDay)] = 130;
+        mainfloor_Opus_price_array[showDays.indexOf(currentDay)] = 130;
       }
 
       //🧑‍💻⚡Reset to remaining shows
@@ -605,7 +606,7 @@ document.addEventListener("DOMContentLoaded", function () {
         showHoursArray = [...showHours];
         slotsArray = [...slots];
         mainFloor_default_price_array = [...mainFloor_default_price];
-        GeneralAdmission__Tier_2_array = [...GeneralAdmission__Tier_2];
+        mainfloor_Opus_price_array = [...mainfloor_Opus_price];
       }
     });
 
@@ -875,7 +876,8 @@ document.addEventListener("DOMContentLoaded", function () {
           (tableData.table_number >= 220 && tableData.table_number <= 222)
         ) {
           tier_color = "#cb82e6";
-          tableData.price = mainfloor_Opus_price[showDays.indexOf(currentDay)];
+          tableData.price =
+            mainfloor_Opus_price_array[showDays.indexOf(currentDay)];
         }
       }
 
