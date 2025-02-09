@@ -166,7 +166,7 @@
         margin:10px;
       }
 
-      .cart-count{font-size: 12px;
+      #cart-count{font-size: 12px;
     padding: 4px;
     background: #cc8e1f;
     border-radius: 100%;
@@ -206,6 +206,25 @@
         background-color: #cc8e1f; /* Neon green */
         border-color: #cc8e1f;
       }
+
+      .form-check-input:disabled[type=checkbox] {
+  
+    --bs-form-check-bg-image: none;
+        background: #e1e1e1;
+    opacity: 1;
+    color: #fff;
+}
+
+      .form-check-input:disabled[type=checkbox]:after {
+  content: "✕"; /* Unicode "x" symbol */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: #999;
+}
+
 
       /* Add a checkmark using pseudo-element */
       .form-check-input:checked::after {

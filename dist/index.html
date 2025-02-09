@@ -14,6 +14,8 @@
       rel="stylesheet"
       href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css"
     />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
       body {
         background: #000;
@@ -32,15 +34,50 @@
         cursor: pointer;
       }
 
-      #checkout {
-        position: absolute;
-        right: 0;
-        top: 0;
-        background: #5f0202;
+      .remove{
+            position: absolute;
+    right: 22px;
+    cursor:pointer;
 
-        box-shadow: 0 0 2px #fff;
-        padding: 15px;
       }
+
+      .checkout-wrappper{  position: absolute;
+        right: -230px;
+        top: 0;
+            width: 230px;
+               transition: all 1s;
+            
+       
+
+      }
+
+      .pos-0{
+        right:0;
+      }
+
+      #checkout {
+      
+        padding: 15px;
+         background: #5f0202;
+           box-shadow: 0 0 2px #fff;
+
+        
+
+
+
+      }
+
+      .menu{
+        position: absolute;
+    left: -70px;
+  
+      }
+
+      .cart{
+        position:absolute ;  left: -45px;
+      }
+
+
 
       .table {
         width: 22px;
@@ -129,6 +166,19 @@
         margin:10px;
       }
 
+      #cart-count{font-size: 12px;
+    padding: 4px;
+    background: #cc8e1f;
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    top: 0;
+    right: -14px;}
+
       .table-reserve {
         margin: 0 8px;
         text-align: center;
@@ -153,9 +203,28 @@
 
       /* Checkbox checked state */
       .form-check-input:checked {
-        background-color: #4caf50; /* Neon green */
-        border-color: #4caf50;
+        background-color: #cc8e1f; /* Neon green */
+        border-color: #cc8e1f;
       }
+
+      .form-check-input:disabled[type=checkbox] {
+  
+    --bs-form-check-bg-image: none;
+        background: #e1e1e1;
+    opacity: 1;
+    color: #fff;
+}
+
+      .form-check-input:disabled[type=checkbox]:after {
+  content: "✕"; /* Unicode "x" symbol */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: #999;
+}
+
 
       /* Add a checkmark using pseudo-element */
       .form-check-input:checked::after {
@@ -170,8 +239,8 @@
 
       /* Hover effect */
       .form-check-input:hover {
-        border-color: #4caf50; /* Glowing green border */
-        box-shadow: 0px 0px 2px #4caf50;
+        border-color: #cc8e1f; /* Glowing green border */
+        box-shadow: 0px 0px 2px #cc8e1f;
       }
       .special-table .table-reserve {
         display: flex;
@@ -295,8 +364,12 @@ a.ui-state-default:hover {
   border: solid 3px #cc8e1f;
 }
 
+.cart-notification{
+  font-size: 20px;;
+}
+
     </style>
-    <script type="module" crossorigin src="/assets/index-hbP-FuM3.js"></script>
+    <script type="module" crossorigin src="/assets/index-Byb2AvQ-.js"></script>
   </head>
   <body>
     <div class="container mt-4">
@@ -762,7 +835,18 @@ a.ui-state-default:hover {
       </div>
     </div>
 
-    <div id="checkout"></div>
+    <div class="checkout-wrappper">
+      <div class="cart-notification d-flex justify-content-between">
+        <div class="menu" id="menu">  <i class="fa-solid fa-bars"></i> </div>
+      <div class="cart"> <i class="fa-solid fa-cart-shopping"></i> <span id="cart-count">0</span></div> 
+      </div>
+    <div id="checkout">
+
+
+
+    </div>
+    </div>
+
     <table id="result" border="1" class="d-none"></table>
     <!-- Payment Form -->
     <form
