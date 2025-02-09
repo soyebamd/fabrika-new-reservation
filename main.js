@@ -846,6 +846,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       //🧑‍💻⚡ Change Tier number according to sheet
 
+      // 🧑‍💻⚡Add type to reservation data
+
+      if (
+        (tableData.table_number >= 500 && tableData.table_number <= 506) || // IDs 500-506
+        (tableData.table_number >= 315 && tableData.table_number <= 317) // IDs 315-317
+      ) {
+        tableData.type = "per couch";
+      } else {
+        tableData.type = "per person";
+      }
+
       //Default add tier Price
       tableData.tier = 1;
 
@@ -1083,7 +1094,7 @@ document.addEventListener("DOMContentLoaded", function () {
       createCol.classList.add("table-reserve");
       // createCol.style.backgroundColor = color;
       createCol.innerHTML = `<div class="input-container"><div class="card text-dark fw-bold text-center" style="background-color:${color}">$${data.price}
-  <small style="font-size:10px;">${data.table_number}</small></div>
+  <small style="font-size:10px;">${data.table_number}</small><small  style="font-size:10px;">${data.type}</small></div>
   </div>`;
 
       tableGroup.appendChild(createCol);
