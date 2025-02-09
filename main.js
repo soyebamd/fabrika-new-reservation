@@ -126,6 +126,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const showInfo = document.querySelector("#show-info");
 
+  const cartCount = document.querySelector("#cart-count");
+
+  const checkoutWrappper = document.querySelector(".checkout-wrappper");
+
+  const burgerMenu = document.querySelector("#menu");
+
+  function activeToggle() {
+    const handleBurgerMenuClick = function () {
+      checkoutWrappper.classList.toggle("pos-0");
+    };
+    burgerMenu.addEventListener("click", handleBurgerMenuClick);
+  }
+
   const customerInformation = document.querySelector("#customer-information");
   customerInformation.style.display = "none";
   let daysOfWeek = [
@@ -1284,6 +1297,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (removeBookingIndex !== -1) {
               reservationData.splice(removeBookingIndex, 1);
               console.log("Removed Reservation:", reservationData);
+              cartCount.textContent = reservationData.length;
+              if (reservationData.length <= 0)
+                checkoutWrappper.classList.remove("pos-0");
 
               updateTableDisplay();
               customerInformation.style.display =
@@ -1292,7 +1308,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
 
           function updateTableDisplay(isTimeSelected) {
-            checkout.innerHTML = "";
+            //   checkout.innerHTML = "";
 
             // Create a map to track unique table_id + time_slot combinations
             const uniqueReservations = new Map();
@@ -1311,7 +1327,12 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             // Clear existing reservationData array
+
+            // Clear existing content in the checkout element
             reservationData.length = 0;
+            checkout.innerHTML = "";
+
+            // Clear reservationData before rebuilding
 
             // Rebuild reservationData and display with unique entries
             uniqueReservations.forEach(({ data, index }) => {
@@ -1321,19 +1342,54 @@ document.addEventListener("DOMContentLoaded", function () {
               // Show/hide customer information
               customerInformation.style.display = "block";
 
-              // Add reservation to display
-              checkout.innerHTML += `
-      <div class="reservation-item">
-        <p>#${index + 1}</p>
-        <p><strong>Show Name</strong>: ${data.show_name}</p>
-        <p><strong>Show Day</strong>: ${data.show_day}</p>
-        <p><strong>Date</strong>: ${data.table_booking_date}</p>
-        <p><strong>Seating Time</strong>: ${data.time_slot}</p>
-        <p><strong>${data.table_location}</strong>: $${data.table_price}</p>
-        <p>For dev use only:</p>
-        <p><strong>Table</strong>: ${data.table_id}</p>
-      </div>
-    `;
+              // Create a new reservation item
+              const reservationItem = document.createElement("div");
+              reservationItem.classList.add("reservation-item");
+              reservationItem.setAttribute("data-table-id", data.table_id); // Add a data attribute for easy identification
+              reservationItem.innerHTML = `
+    <div class="remove" id="${data.table_id}" data-date="${data.table_booking_date}" data-time="${data.time_slot}"><i class="fa-solid fa-trash-can"></i></div>
+    <p><strong>Show Day</strong>: ${data.show_day}</p>
+    <p><strong>Date</strong>: ${data.table_booking_date}</p>
+    <p><strong>Seating Time</strong>: ${data.time_slot}</p>
+    <p><strong>${data.table_location}</strong>: $${data.table_price}</p>
+    <p>For dev use only:</p>
+    <p><strong>Table</strong>: ${data.table_id}</p>
+  `;
+
+              cartCount.textContent = reservationData.length;
+
+              console.log(reservationData.length + "REservaton data lentth");
+              activeToggle(true);
+
+              // Append the reservation item to the checkout element
+              checkout.appendChild(reservationItem);
+
+              // Add event listener to the remove button
+              const removeButton = reservationItem.querySelector(".remove");
+              removeButton.addEventListener("click", function () {
+                // Remove the reservation item from the DOM
+                checkout.removeChild(reservationItem);
+
+                // Remove the item from reservationData array
+                const indexToRemove = reservationData.findIndex(
+                  (item) =>
+                    item.table_id === data.table_id &&
+                    item.table_booking_date == data.table_booking_date &&
+                    item.time_slot == data.time_slot
+                );
+                if (indexToRemove !== -1) {
+                  document.getElementById(this.id).checked = false;
+                  reservationData.splice(indexToRemove, 1);
+                  cartCount.textContent = reservationData.length;
+                  if (reservationData.length <= 0)
+                    checkoutWrappper.classList.remove("pos-0");
+                }
+
+                // Optional: Update the UI or perform additional cleanup
+                console.log(
+                  `Removed reservation with table_id: ${data.table_id}`
+                );
+              });
             });
           }
         });
